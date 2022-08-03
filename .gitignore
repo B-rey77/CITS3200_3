@@ -1,0 +1,3 @@
+pyenv/
+*/db.sqlite3
+*.pyc

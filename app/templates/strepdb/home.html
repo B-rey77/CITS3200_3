@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{% static 'strepdb.css' %}"/>
+        <title>StrepDB</title>
+        <script>
+            window.onload = () => {
+                const el = document.getElementById('load');
+                function doLoadingThing() {
+                    el.innerText = el.innerText + '.';
+                    window.setTimeout(doLoadingThing, 100);
+                }
+                doLoadingThing();
+            }
+        </script>
+
+    </head>
+    <body>
+        <h1>Strep A infections DB</h1>
+        <p id="load">Loading project.</p>
+    </body>
+</html>
