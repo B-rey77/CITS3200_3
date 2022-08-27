@@ -11,7 +11,8 @@ python manage.py runserver/python3 manage.py runserver *depends on your python v
 
 
 HTML pages:
-localserver
+localserver  - homepage
 localserver/login
 localserver/signup
 localserver/visitor (you wont get in unless youre signed up)
+localserver/admin
