@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+
+/* Login/Register/Update User details form: modal background 
+of the login/register forms */
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color*/
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity*/
+    padding-top: 60px;
+} 
+/* Login/Register form: styling and positioning of the 
+form in center of browser */
+#form-login {
+    color: black;
+    position: relative;
+    width: 500px;
+    margin-left: 680px;
+    margin-top: 100px;
+    border-radius: 16px;
+    font-family: Source Sans Pro;
+} 
+/* Login/Register form: formating of the 'X' close icon */
+.close-x {
+    cursor: pointer;
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 20px;
+    padding: 0px 5px;
+    transform: translate(0%, -50%);
+    color: #a54c4c;
+    font-size: 170%;
+    display: block;
+}
+/* Login/Register form: the 'X' hover color */
+.close-x:hover {
+    color: rgb(221, 60, 60);
+}
+/* Login/Register form: their individual tab buttons */
+.login-tab,
+.register-tab {
+    text-decoration: none;
+    display: block;
+    width: 1005px;
+    background-color: #37474f;
+    text-align: center;
+    color: #fff;
+    font-size: 25px;
+    padding: 10px;
+}
+/* Login/Register form: their tab buttons */
+#tab-btn {
+    display: flex;
+}
+/* Login/Register form: the colors when they are active */
+.login-regstr {
+    background-color: #eee;
+    color: #000;
+}
+/* Login/Register form: the size of the form */
+.login-box,
+.register-box {
+    width: auto;
+    background-color: #eee;
+    padding: 10px 20px 20px 20px;
+    box-shadow: 2px 2px 5px #555;
+}
+/* Login/Register form: the input fields of the login and register form */
+.inp {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 20px;
+    border: 2px solid #888;
+    border-bottom: 5px solid #888;
+    background-color: #fff;
+    color: #666;
+}
+/* Login/Register form: the input field's focus */
+.inp:focus {
+    outline: none;
+    border: 2px solid #555;
+    border-bottom: 5px solid #555;
+}
+/* Login/Register form: the submit button of the forms */
+.sub-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #f44336;
+    color: #fff;
+    cursor: pointer;
+    border-bottom: 5px solid #444;
+}
+/* Login/Register form: the submit button's focus */
+.sub-btn:focus {
+    outline: none;
+}
+/* Login/Register form: the submit button when active */
+.sub-btn:active {
+    border: none;
+    margin-top: 5px;
+}
+/* Login/Register form: the cancel button of the forms */
+.cancel-btn {
+    background-color: #ec958f;
+}
+/* Login form: the forgot pswd text */
+#forgot {
+    font-size: 16px;
+    color: #444;
+    text-decoration: none;
+    display: block;
+}
+/* Register form: hide form by default */
+.register-box {
+    display: none;
+}
+/* Register form: positioning of the age group dropdown menu on the register window */
+/* goes hand in hand with j-query script */
+.age-label {
+    display: block;
+    position: fixed;
+    width: 460px;
+    height: 35px;
+}
+/* Register form: the age group's dropdown size */ 
+.age-select {
+    -webkit-appearance: none;
+    border: 0;
+    width: 100%;
+    height: var(--select-height);
+}
+/* Register form: the age group dropdown default text */ 
+.age-span {
+    background: #fff;
+    box-shadow: 2px 2px 5px #555;
+    line-height: var(--select-height);
+    pointer-events: none;
+    text-align: center;
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+/* Register form: the gender radio buttons */
+#gndr-btn {
+    display: -webkit-flex;
+    padding-top: 25px;
+    font-size: 20px;
+    justify-content: space-evenly;
+}

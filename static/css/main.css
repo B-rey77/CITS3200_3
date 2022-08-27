@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+/* Main: body styling across all pages */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Main: styling of the icons used across all pages */
+.gogl-icon {
+    font-size: 125px; 
+    vertical-align: middle;
+}
