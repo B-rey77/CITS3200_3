@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from database.models import * 
-from database.forms import CreateUserForm #createrform imported from forms.py
+from database.forms import CreateUserForm, AccountUpdateForm #createrform imported from forms.py
 
 def home(request):
     return render(request, 'database/home.html')
@@ -35,20 +35,15 @@ def signupPage(request):
     context = {'form': form}
     return render(request, 'database/signup.html', context)
 
-def loginPage(request):
+def loginPage(request, *args, **kwargs):
     if request.user.is_authenticated:
         return redirect('visitor')
     else:
         if request.method == 'POST':
-            username = request.POST.get('username')
-            email = request.POST.get('email')
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email')
+            username = request.POST.get('username')            
             password = request.POST.get('password')
-                    
-            user = authenticate(request, username=username, password=password, email=email,
-                                first_name=first_name, last_name=last_name)
+                                         
+            user = authenticate(request, username=username, password=password)
             
             if user is not None:
                 login(request, user)                
@@ -71,4 +66,43 @@ def visitor(request):
     return render(request, 'database/userprofile.html')
 
 
+def edit_profile_page(request):
+	if not request.user.is_authenticated:
+		return redirect("login")
+	
+	user_id = request.user.id #id of user
+	account = Users.objects.get(pk=user_id) #from database
+
+	if account.pk != request.user.pk: #comparison of database pk vs logged in user pk
+		return HttpResponse("You cannot edit someone elses profile.")
+	context = {}
+	if request.POST:
+		form = AccountUpdateForm(request.POST, instance=request.user)
+		if form.is_valid():
+			form.save() #apply form save function
+			new_username = form.cleaned_data['username']
+			return redirect('visitor')
+		else:
+			form = AccountUpdateForm(request.POST, instance=request.user,
+				initial={					
+					"email": account.email, 
+					"username": account.username,
+					"first_name": account.first_name,
+					"last_name": account.last_name
+				}
+			)
+			context['form'] = form
+	else:
+		# display user properties on edit page
+		form = AccountUpdateForm(
+			initial={					
+					"email": account.email, 
+					"username": account.username,
+					"first_name": account.first_name,
+					"last_name": account.last_name
+			}
+		)
+		context['form'] = form
+	
+	return render(request, 'database/edit_profile_page.html', context)
 

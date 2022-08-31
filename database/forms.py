@@ -29,4 +29,40 @@ class CreateUserForm(UserCreationForm):
         except Exception as e:
             return username
         raise forms.ValidationError(f"Username {username} is already in use.")    
-    
+
+
+# form to update user account properties 
+class AccountUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Users
+        fields = ('username', 'email', 'first_name', 'last_name' )
+
+    # check if email is valid 
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        try:
+            account = Users.objects.exclude(pk=self.instance.pk).get(email=email)
+        except Users.DoesNotExist:
+            return email
+        raise forms.ValidationError(f'Email {email} is already in use.')
+
+    # check if username is valid 
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            account = Users.objects.exclude(pk=self.instance.pk).get(username=username)
+        except Users.DoesNotExist:
+            return username
+        raise forms.ValidationError(f'Username {username} is already in use.')
+
+    # Handle saving of updted user properties form
+    def save(self, commit=True):
+        account = super(AccountUpdateForm, self).save(commit=False)
+        account.username = self.cleaned_data['username']
+        account.email = self.cleaned_data['email'].lower()
+        account.first_name = self.cleaned_data['first_name']
+        account.last_name = self.cleaned_data['last_name']
+        if commit:
+            account.save()
+        return account

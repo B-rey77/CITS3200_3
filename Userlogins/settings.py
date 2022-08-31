@@ -133,3 +133,8 @@ STATICFILES_DIRS = [
 
 # Default model for authenticating has been changed
 AUTH_USER_MODEL = 'database.Users'
+
+# for password reset: email will appear in console
+# for development only
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
