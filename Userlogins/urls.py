@@ -18,6 +18,6 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('database/', admin.site.urls),
     path('', include('database.urls')) #trigger urls.py in database app folder
 ]

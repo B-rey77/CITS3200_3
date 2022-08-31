@@ -5,6 +5,7 @@ from database.models import Users # Custom admin form imported from models.py
 
 # Register your models here.
 
+
 # The Custom Admin user model
 class AccountAdmin(UserAdmin):
     list_display = ('email', 'username', 'date_joined', 'is_admin', 'is_superuser')
