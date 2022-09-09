@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from database.models import * 
-from database.forms import CreateUserForm, AccountUpdateForm, StudiesForm, CustomerForm #createrform imported from forms.py
+from database.forms import CreateUserForm, AccountUpdateForm, StudiesForm #createrform imported from forms.py
 
 def home(request):
     return render(request, 'database/home.html')
