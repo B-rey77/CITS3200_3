@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from database.models import * 
-from database.forms import CreateUserForm, AccountUpdateForm #createrform imported from forms.py
+from database.forms import CreateUserForm, AccountUpdateForm, StudiesForm, CustomerForm #createrform imported from forms.py
 
 def home(request):
     return render(request, 'database/home.html')
@@ -106,3 +106,12 @@ def edit_profile_page(request):
 	
 	return render(request, 'database/edit_profile_page.html', context)
 
+
+def add_study(request):
+    form = StudiesForm()
+    if request.method == 'POST':
+        form = StudiesForm(request.POST)
+        if form.is_valid():
+            form.save()
+    context = {'form':form}
+    return render(request, 'database/add_study.html', context)

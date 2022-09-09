@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
+from database.models import Studies 
+from .models import Customer
 
 from database.models import Users # Custom user form imported from models.py
 
@@ -66,3 +68,8 @@ class AccountUpdateForm(forms.ModelForm):
         if commit:
             account.save()
         return account
+    
+class StudiesForm(forms.ModelForm):
+    class Meta:
+        model = Studies
+        fields = '__all__'

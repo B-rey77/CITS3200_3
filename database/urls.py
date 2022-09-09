@@ -8,7 +8,8 @@ urlpatterns = [
     path('edit_profile_page/', views.edit_profile_page, name='edit_profile_page'),
     path('signup/', views.signupPage, name='signup'),   
     path('login/', views.loginPage, name='login'),
-    path('logout/', views.logoutUser, name='logout'),  
+    path('logout/', views.logoutUser, name='logout'), 
+    path('add_study', views.add_study, name='add_study'),
     
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='database/password/password_change_done.html'), name='password_change_done'),
