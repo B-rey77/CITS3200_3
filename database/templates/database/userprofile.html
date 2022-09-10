@@ -4,98 +4,142 @@
 CITS User Profile 
 {% endblock %}
 
+{% block style %}
+	.form_container {
+		margin-top: 80px;
+		margin-bottom: 150px;
+	}
+{% endblock %}
+
 {% block main %}
+	{% if user.is_authenticated %}
+		<div class="container py-5 h-100 form_container">
+			<div class="row d-flex justify-content-center align-items-center h-100">
+				<div class="col col-xl-8">
+					<div class="card mb-4">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">
+										<i class="material-icons gogl-icon">
+											badge
+										</i>
+										Full Name
+									</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0">
+										{{request.user.first_name}} {{request.user.last_name}}
+									</p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">
+										<i class="material-icons gogl-icon">
+											mail
+										</i>
+										Email
+									</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0">
+										{{request.user.email}} 
+									</p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">
+										<i class="material-icons gogl-icon">
+											account_circle
+										</i>
+										Profession
+									</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0">
+										{{request.user.profession}}
+									</p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">
+										<i class="material-icons gogl-icon">
+											home_work
+										</i>
+										Institution
+									</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0">
+										{{request.user.institution}}
+									</p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">
+										<i class="material-icons gogl-icon">
+											map
+										</i>
+										Country
+									</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0">
+										{{request.user.country}} 
+									</p>
+								</div>
+							</div>
+							<hr>
+							<!-- Edit account details -->
+							<div class="row">                            
+								<div class="col-sm-3">
+									<span class="material-icons gogl-icon">
+										edit
+									</span>
+									<a href="{% url 'edit_profile_page' %}" class="ml-2">
+										Edit Details
+									</a>
+								</div>
+							</div>
+							<hr>
+							<div class="row">  
+								<div class="col-sm-9">
+									<span class="material-icons gogl-icon">
+										lock
+									</span>
+									<a class="m-auto" href="{% url 'password_change' %}">
+										Change Password
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-{% if user.is_authenticated %}
+			<div class="d-flex flex-column mt-4">
+				<a class="m-auto" href="{% url "database_search" %}">
+					<h3> 
+						Browse Research and Scholarship
+					</h3>
+				</a>
+			</div>
+		</div>
 
-<div class="container dash-jumbo" style="color: black; padding: 50px;">
-    <div class="main-body">
-        <div class="col-md-8">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <!-- User Name recorded in database -->
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="btn">
-                                <h6 class="mb-01">
-                                    <span class="material-icons gogl-icon">
-                                        verified_user
-                                    </span>
-                                    User Name
-                                </h6>
-                            </p>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            <span>
-                                {{request.user.first_name}} {{request.user.last_name}}
-                                {{request.user.id}}
-                            </span>
-                        </div>
-                    </div>
-                    <hr>
-                    <!-- Email recorded in database -->
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="btn">
-                                <h6 class="mb-0">
-                                    <span class="material-icons gogl-icon">
-                                        mail
-                                    </span>
-                                    Email
-                                </h6>
-                            </p>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            <span>
-                                {{request.user.email}} 
-                            </span>
-                        </div>
-                    </div>
-                    <hr>                    
-                    <!-- Gender recorded in database -->
-                    <div class="row">
-                        <div class="col-sm-3">
-                        <p class="btn">
-                            <h6 class="mb-0"> 
-                                <span class="material-icons gogl-icon">
-                                    account_circle
-                                </span>
-                                About me 
-                            </h6>
-                        </p>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            <input type="text" name="uname" value="I am CITS3200" readonly style="border: none;">
-                        </div>
-                    </div>
-                    <hr>
-                    <!-- Edit account details -->
-                    <div class="row">                            
-                        <div class="d-flex justify-content-center links">
-                            <span class="material-icons gogl-icon">
-                                edit
-                            </span>
-                            <a href="{% url 'edit_profile_page' %}" class="ml-2">Edit Details </a>
-                        </div>
+	{% else %}
 
-                        <div class="d-flex flex-column mt-4">
-                            <a class="m-auto" href="{% url 'password_change' %}">
-                                Change Password
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+		<p>
+			You are not logged in. Please click here to <a href="{% url 'login' %}" class="ml-2">login</a>
+		</p>
 
-{% else %}
-
-<p> You are not logged in. Please click here to <a href="{% url 'login' %}" class="ml-2">login</a>
-
-{% endif %}
-
-
+	{% endif %}
 
 {% endblock %}

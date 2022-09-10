@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'database',
     'database.apps.DatabaseConfig',
-    'database.apps.MyAdminConfig', # put admin site last so that our templates override the default admin site ones - FVP
+    'database.apps', # put admin site last so that our templates override the default admin site ones - FVP
+    #'database.apps.MyAdminConfig', # put admin site last so that our templates override the default admin site ones - FVP
 ]
 
 MIDDLEWARE = [

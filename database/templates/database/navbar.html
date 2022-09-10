@@ -19,20 +19,22 @@
         <a class="nav-link" href="#">
           Home
         </a>
-      </li>
+        </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'admin:index' %}">
-          Database
+        <a class="nav-link" href="#">
+          Dashboard
         </a>
       </li>
     </ul>
   </div>
-  <span class="hello-msg"> 
-    Hello, {{request.user}} 
-  </span>
-  <span>
-    <a class="hello-msg" href="{% url 'logout' %}">
-      Logout
-    </a>
-  </span>
+  {% if request.user.is_authenticated %}
+    <span class="hello-msg"> 
+      Hello, {{request.user}} 
+    </span>
+    <span>
+      <a class="hello-msg" href="{% url 'logout' %}">
+        Logout
+      </a>
+    </span>
+  {% endif %}
 </nav>

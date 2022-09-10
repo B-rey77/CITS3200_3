@@ -4,36 +4,49 @@
 CITS3200 Home 
 {% endblock %}
 
+{% block style %}
+	.form_container {
+		margin-top: 80px;
+		margin-bottom: 150px;
+	}
+{% endblock %}
+
 {% block main %}
+	<div class="container form_container">
+		<div class="row">
+			<div class="col-4 card text-white bg-dark mb-3">
+					<div class="card-header">
+						Strep A Research Literature Database
+					</div>
+				<div class="card-body">
+					<h5 class="card-title">
+						About Strep A
+					</h5>
+					<p class="card-text">
+						
+						Strep A is a bacteria that causes throat and skin infections, 
+						usually in kids aged five to 15. Left untreated, it can also 
+						lead to devastating conditions that can cause lasting damage 
+						to the heart or kidneys, toxic shock syndrome or flesh-eating 
+						disease.
 
-<div class="container" style="padding: 50px;">
-  <div class="row">
-    <div class="col-4 card text-white bg-dark mb-3">
-      <div class="card-header">
-        Strep A Research Literature Database
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">
-          About Strep A
-        </h5>
-        <p class="card-text">
-          
-          Strep A is a bacteria that causes throat and skin infections, 
-          usually in kids aged five to 15. Left untreated, it can also 
-          lead to devastating conditions that can cause lasting damage 
-          to the heart or kidneys, toxic shock syndrome or flesh-eating 
-          disease.
+						Each year, Strep A causes 616 million sore throats and 500,000 
+						deaths. That’s why the Australian Strep A Vaccine Initiative 
+						(ASAVI) is leading the global effort to develop a world-first 
+						Strep A vaccine. We’re determined to reduce the impact of 
+						Strep A infections, potentially saving millions of young lives 
+						and improving the health and wellbeing of our kids.
+					</p>
+					<a class="m-auto" href="{% url 'login' %}">
+						<button type="button" class="btn btn-primary">
+							Login here
+						</button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
-          Each year, Strep A causes 616 million sore throats and 500,000 
-          deaths. That’s why the Australian Strep A Vaccine Initiative 
-          (ASAVI) is leading the global effort to develop a world-first 
-          Strep A vaccine. We’re determined to reduce the impact of 
-          Strep A infections, potentially saving millions of young lives 
-          and improving the health and wellbeing of our kids.
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+  	{% block signup %}{% endblock %}
 
 {% endblock %}
