@@ -1,98 +1,145 @@
-<!DOCTYPE html>
-<html>
+{% extends "database/base.html" %}
 
-<head>
-    <style type="text/css">
-        .image-container{
-            max-width: 250px;
-            height: auto;
-            position: relative;
-        }
-        .field-heading{
-            color: #737373;
-        }
-        #id_confirm{
-            color: green;
-        }
-        #id_confirm:hover {
-            opacity: 0.3;
-        }
-        #id_cancel:hover {
-            opacity: 0.3;
-        }
-        #id_cancel{
-            color: red;
-        }
-        .material-icons{
-            font-size: 30px;
-        }
-        .material-icons:hover{
-            cursor: pointer;
-        }
-    </style>
-</head>
+{% block title %}
+	Edit Details
+{% endblock %}
 
-<body>
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="card profile-card">
-                <div class="card-body">
-                    <div class="d-flex flex-column justify-content-center p-4">
-                        
-                        <form class="form-signin" method="post">
-                            {% csrf_token %}
-                            
-                            <h6 class="mt-4 field-heading">
-                                Email
-                            </h6>
-                            <input type="email" name="email" id="id_input_email" class="form-control" placeholder="Email address" required autofocus value={{form.initial.email}}>
-                            
-                            <h6 class="mt-4 field-heading">
-                                Username
-                            </h6>
-                            <input type="text" name="username" id="id_input_username" class="form-control" placeholder="Username" required
+{% block style %}
+	.user_card {
+		margin-top: auto;
+		margin-bottom: auto;
+		background: rgba(255, 255, 255);
+		position: relative;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		padding: 10px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		border-radius: 5px;
+
+	}
+
+	.login_btn {
+		width: 100%;
+		background: #33ccff !important;
+		color: white !important;
+	}
+	
+	.login_btn:focus {
+		box-shadow: none !important;
+		outline: 0px !important;
+	}
+
+	.form_container {
+		margin-top: 80px;
+		margin-bottom: 150px;
+	}
+{% endblock %}
+
+{% block main %}
+	<div class="container form_container">
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card">
+				<div class="d-flex justify-content-center">
+					<h5 id="form-title">
+						Update your details below
+					</h5>
+				</div>
+				<div class="container">
+					<form class="form-signin" method="post">
+						{% csrf_token %}
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputUsername">
+									Username
+								</label>
+								<input type="text" name="username" id="id_input_username" class="form-control" placeholder="Username" required
                             value="{{form.initial.username}}">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputEmail">
+									Email
+								</label>
+								<input type="email" name="email" id="id_input_email" class="form-control" placeholder="Email address" required autofocus value={{form.initial.email}}>
+							</div>
+						</div>
 
-                            <h6 class="mt-4 field-heading">
-                                First Name
-                            </h6>
-                            <input type="text" name="first_name" id="id_input_first_name" class="form-control" placeholder="First Name" required
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputFirstName">
+									First Name
+								</label>
+								<input type="text" name="first_name" id="id_input_first_name" class="form-control" placeholder="First Name" required
                             value="{{form.initial.first_name}}">
-
-                            <h6 class="mt-4 field-heading">
-                                Last Name
-                            </h6>
-                            <input type="text" name="last_name" id="id_input_last_name" class="form-control" placeholder="Last Name" required
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputLastName">
+									Last Name
+								</label>
+								<input type="text" name="last_name" id="id_input_last_name" class="form-control" placeholder="Last Name" required
                             value="{{form.initial.last_name}}">
-                                    
-                            {% for field in form %}
-                            <p>
-                                {% for error in field.errors %}
-                                    <p style="color: red">{{ error }} </p>
-                                {% endfor %}
-                            </p>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-3">
+								<label for="inputProfession">
+									Profession
+								</label>
+								<input type="text" name="profession" id="id_input_profession" class="form-control" placeholder="Profession" required
+                            value="{{form.initial.profession}}">
+							</div>
+							<div class="form-group col-md-3">
+								<label for="inputInstitution">
+									Institution
+								</label>
+								<input type="text" name="institution" id="id_input_institution" class="form-control" placeholder="Institution" required
+                            value="{{form.initial.institution}}">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputCountry">
+									Country
+								</label>
+								<input type="text" name="country" id="id_input_country" class="form-control" placeholder="Country" required
+                            value="{{form.initial.country}}">
+							</div>
+						</div>
+						{% comment %} Display form errors {% endcomment %}
+						{% for field in form %}
+                            {% for error in field.errors %}
+								<p style="color: red">
+									{{ error }} 
+								</p>
                             {% endfor %}
+                        {% endfor %}
                             
-                            {% if form.non_field_errors %}
+                        {% if form.non_field_errors %}
                             <div style="color: red">
                                 <p>{{form.non_field_errors}}</p>
                             </div>        
-                            {% endif %}
-                            <hr>
+                        {% endif %}
+						{% comment %} Save/Cancel buttons {% endcomment %}
+						<div class="form-row">
+							<div class="form-group col-md-3">
+								<button class="mt-4 btn btn-primary flex-grow-1" type="submit">
+									Save
+								</button>
+							</div>
+							<div class="form-group col-md-3">
+								<a href="{% url 'visitor' %}">
+									<button class="mt-4 btn btn-primary flex-grow-1" type="cancel">
+										Cancel
+									</button>
+								</a>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+{% endblock %}
 
-                            <div class="d-flex flex-column mt-4">
-                                <button class="mt-4 btn btn-primary flex-grow-1" type="submit">
-                                    Save
-                                </button>
-                            </div>
-                        
-                        </form>
-    
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>

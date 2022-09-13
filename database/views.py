@@ -1,8 +1,9 @@
 from tkinter import Entry
 from django.shortcuts import render, redirect
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.forms import UserCreationForm
+from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -15,57 +16,64 @@ from database.models import *
 from database.forms import CreateUserForm, AccountUpdateForm #createrform imported from forms.py
 
 def home(request):
-    return render(request, 'database/home.html')
+	return render(request, 'database/home.html')
 
+@csrf_protect
 def signupPage(request):
-    if request.user.is_authenticated:
-        return redirect('visitor')
-    else:
-        form = CreateUserForm() #createrform imported from forms.py
-        if request.method == 'POST':
-            form = CreateUserForm(request.POST)
-                        
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, 'Account was created for ' + user)            
-                
-                return redirect('login')
-    
-    context = {'form': form}
-    return render(request, 'database/signup.html', context)
+	if request.user.is_authenticated:
+		return redirect('visitor')
+	else:
+		form = CreateUserForm() #createrform imported from forms.py
+		if request.method == 'POST':
+			form = CreateUserForm(request.POST)
+						
+			if form.is_valid():
+				form.save()
+				user = form.cleaned_data.get('username')
+				messages.success(request, 'Account was created for ' + user)            
+				
+				return redirect('login')
+	
+	context = {'form': form}
+	return render(request, 'database/signup.html', context)
 
+@csrf_protect
 def loginPage(request, *args, **kwargs):
-    if request.user.is_authenticated:
-        return redirect('visitor')
-    else:
-        if request.method == 'POST':
-            username = request.POST.get('username')            
-            password = request.POST.get('password')
-                                         
-            user = authenticate(request, username=username, password=password)
-            
-            if user is not None:
-                login(request, user)                
-                return redirect('visitor')
-            else:
-                messages.info(request, 'Username OR Password is incorrect')
-            
-    return render(request, 'database/login.html')
+	if request.user.is_authenticated:
+		return redirect('visitor')
+	else:
+		if request.method == 'POST':
+			username = request.POST.get('username')            
+			password = request.POST.get('password')
+										 
+			user = authenticate(request, username=username, password=password)
+			
+			if user is not None:
+				login(request, user)                
+				return redirect('visitor')
+			else:
+				messages.info(request, 'Username OR Password is incorrect')
+			
+	return render(request, 'database/login.html')
 
 # Handling of user logging out
 def logoutUser(request):
-    logout(request)
-    return redirect('login')
+	logout(request)
+	return redirect('login')
 
 # Visitor dashboard
 # restrict page view to logged in users
 
 @login_required(login_url='login')
 def visitor(request):
-    return render(request, 'database/userprofile.html')
+	return render(request, 'database/userprofile.html')
 
+@login_required(login_url='login')
+def database_search(request):
+	return render(request, 'database/database_search.html')
 
+# Update user profile properties
+@login_required(login_url='login')
 def edit_profile_page(request):
 	if not request.user.is_authenticated:
 		return redirect("login")
@@ -88,7 +96,10 @@ def edit_profile_page(request):
 					"email": account.email, 
 					"username": account.username,
 					"first_name": account.first_name,
-					"last_name": account.last_name
+					"last_name": account.last_name,
+	 				"profession": account.profession,
+					"institution": account.institution,
+					"country": account.country
 				}
 			)
 			context['form'] = form
@@ -99,10 +110,16 @@ def edit_profile_page(request):
 					"email": account.email, 
 					"username": account.username,
 					"first_name": account.first_name,
-					"last_name": account.last_name
+					"last_name": account.last_name,
+					"profession": account.profession,
+					"institution": account.institution,
+					"country": account.country
 			}
 		)
 		context['form'] = form
 	
 	return render(request, 'database/edit_profile_page.html', context)
 
+def signup1(request):
+	
+	return render(request, 'database/signupv2.html')

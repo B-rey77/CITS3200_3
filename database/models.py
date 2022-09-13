@@ -53,7 +53,9 @@ class Users(AbstractBaseUser):
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    about = models.TextField(_('about'), max_length=500, blank=True)
+    profession = models.CharField(max_length=50, blank=True)
+    institution = models.CharField(max_length=50, blank=True)
+    country = models.CharField(max_length=50, blank=True)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -106,3 +108,6 @@ class Results(models.Model):
         else:
             return "%s: %d/%d" % (self.study, self.numerator, self.denominator)
     # etc
+
+class database_users(models.Model):
+    first_name = models.CharField(max_length=50)

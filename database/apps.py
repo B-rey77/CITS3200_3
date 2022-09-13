@@ -1,3 +1,4 @@
+from django.contrib.admin import apps
 from django.apps import AppConfig
 
 class DatabaseConfig(AppConfig):
