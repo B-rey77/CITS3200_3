@@ -21,8 +21,8 @@ class StudiesAdmin(ModelAdmin):
     search_fields = ('Paper_title', 'Study_description')
 
 class ResultsAdmin(ModelAdmin):
-    list_display = ('study', 'point_estimate', 'numerator', 'denominator', 'measure')
-    list_filter = ('study', 'ages', 'year_start', 'year_stop')
+    list_display = ('Study', 'point_estimate', 'numerator', 'denominator', 'measure')
+    list_filter = ('Study', 'Age_general', 'Age_min', 'Age_max', 'Age_original', 'Year_start', 'Year_stop')
     search_fields = ('study__title', 'measure')
 
 

@@ -145,18 +145,53 @@ class Studies(models.Model):
         return "%s (%s)" % (self.Paper_title, self.Year)
 
 # FVP: placeholder Results model to test the admin site with. Not intended to be the final product!
+# LH: Rough draft for Results model. Needs further work with cleaner database. Some fields may be redundant upon cleanup.  
 class Results(models.Model):
     class Meta:
         verbose_name_plural = 'Results'
 
-    study = models.ForeignKey(Studies, on_delete=models.CASCADE, )
-    year_start = models.PositiveIntegerField()
-    year_stop = models.PositiveIntegerField()
-    ages = models.CharField(max_length=100, blank=True)
-    point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
-    numerator = models.PositiveIntegerField(null=True, blank=True)
-    denominator = models.PositiveIntegerField(null=True, blank=True)
-    measure = models.TextField(blank=True)
+    Study = models.ForeignKey(Studies, on_delete=models.CASCADE, )
+    Results_ID = models.CharField(max_length=20)
+    AGE_GROUPS = (
+        ('ALL', 'All'),
+        ('AD', 'Adult'),
+        ('C', 'Children'),
+        ('AL', 'Adolescents'),
+        ('I', 'Infant'),
+        ('M', 'Mix'),
+    )
+    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True)
+    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Age_original = models.CharField(max_length=50, blank=True)  
+    Population_gender = models.CharField(max_length=30, blank=True)
+
+
+    Indigenous_status = models.CharField(max_length=20, blank=True)
+    Indigenous_population = models.CharField(max_length=30, blank=True)
+    Country = models.CharField(max_length=30, blank=True)
+    Jurisdiction = models.CharField(max_length=30, blank=True)
+    Specific_location = models.CharField(max_length=100, blank=True)
+    Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Numerator = models.PositiveIntegerField(null=True, blank=True)
+    Denominator = models.PositiveIntegerField(null=True, blank=True)    
+    Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
+    Measure = models.TextField(blank=True)
+    
+    # Change the next 4 fields to boolean? 
+    Interpolated_from_graph = ()
+    Age_standardisation	= ()
+    Dataset_name = 	()
+    Proportion = ()
+    Mortality_flag = models.BooleanField(blank=True)
+    Recurrent_ARF_flag = models.BooleanField(blank=True)
+    GAS_attributable_fraction = models.BooleanField(blank=True)
+    Defined_ARF	= models.BooleanField(blank=True)
+    Focus_of_study = models.TextField(blank=True)
+    Notes = models.TextField(blank=True)
+
     
     def __str__(self):
         if self.point_estimate:
