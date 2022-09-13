@@ -91,9 +91,9 @@ class Studies(models.Model):
     Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS)
     
     Paper_title = models.CharField(max_length=200)
-    Paper_link = models.CharField(max_length=200)
-    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)])
-    Disease = models.CharField(max_length=60)
+    Paper_link = models.CharField(max_length=200, blank=True)
+    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (
         ('CST', 'Cross-sectional'),
         ('P', 'Prospective'),
@@ -108,22 +108,22 @@ class Studies(models.Model):
         ('O', 'Other'),        
     )
     Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS)
-    Study_design_other = models.CharField(max_length=200)
-    Study_description = models.CharField(max_length=200)
-    Case_definition = models.CharField(max_length=200)
-    Case_findings = models.CharField(max_length=200)
-    Case_findings_other = models.CharField(max_length=200)
-    Data_source = models.CharField(max_length=200)
-    Case_cap_meth = models.CharField(max_length=200)
-    Case_cap_meth_other = models.CharField(max_length=200)
-    Coverage = models.CharField(max_length=200)
-    Jurisdiction = models.CharField(max_length=200)
-    Specific_region = models.CharField(max_length=200)
-    Climate = models.CharField(max_length=200)
-    Aria_remote = models.CharField(max_length=200)
-    Population_group_strata = models.CharField(max_length=200)
-    Population_denom = models.CharField(max_length=200)
-    Age_original = models.CharField(max_length=200)
+    Study_design_other = models.CharField(max_length=200, blank=True)
+    Study_description = models.CharField(max_length=200, blank=True)
+    Case_definition = models.CharField(max_length=200, blank=True)
+    Case_findings = models.CharField(max_length=200, blank=True)
+    Case_findings_other = models.CharField(max_length=200, blank=True)
+    Data_source = models.CharField(max_length=200, blank=True)
+    Case_cap_meth = models.CharField(max_length=200, blank=True)
+    Case_cap_meth_other = models.CharField(max_length=200, blank=True)
+    Coverage = models.CharField(max_length=200, blank=True)
+    Jurisdiction = models.CharField(max_length=200, blank=True)
+    Specific_region = models.CharField(max_length=200, blank=True)
+    Climate = models.CharField(max_length=200, blank=True)
+    Aria_remote = models.CharField(max_length=200, blank=True)
+    Population_group_strata = models.CharField(max_length=200, blank=True)
+    Population_denom = models.CharField(max_length=200, blank=True)
+    Age_original = models.CharField(max_length=200, blank=True)
     AGE_GROUPS = (
         ('ALL', 'All'),
         ('AD', 'Adults'),
@@ -131,15 +131,18 @@ class Studies(models.Model):
         ('AL', 'Adolescents'),
         ('EA', 'Elderly Adults'),
     )
-    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS)
-    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5)
-    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5)
-    Burden_measure = models.CharField(max_length=200)
-    Ses_reported = models.BooleanField()
-    Mortality_data = models.BooleanField()
-    Method_limitations = models.BooleanField()    
-    Limitations_identified = models.CharField(max_length=200)
-    Other_points = models.CharField(max_length=200)
+    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True)
+    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Burden_measure = models.CharField(max_length=200, blank=True)
+    Ses_reported = models.BooleanField(blank=True)
+    Mortality_data = models.BooleanField(blank=True)
+    Method_limitations = models.BooleanField(blank=True)    
+    Limitations_identified = models.CharField(max_length=200, blank=True)
+    Other_points = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return "%s (%s)" % (self.Paper_title, self.Year)
 
 # FVP: placeholder Results model to test the admin site with. Not intended to be the final product!
 class Results(models.Model):
