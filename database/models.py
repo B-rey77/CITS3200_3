@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.validators import MaxValueValidator, MinValueValidator 
 
 # Create your models here.
 
@@ -75,25 +76,77 @@ class Users(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
     
-# FVP: set up some placeholder models to test the admin site with. Not intended to be the final product!
-class Study(models.Model):
+class Studies(models.Model):
     class Meta:
         verbose_name = 'Study'
         verbose_name_plural = 'Studies'
 
-    title = models.CharField(max_length=1000)
-    identifier = models.CharField(max_length=20) # unique identifier as in the spreadsheet
-    pub_year = models.PositiveIntegerField()
-    # etc.
+    Unique_identifier = models.CharField(max_length=20)    
+    STUDY_GROUPS = (
+        ('SST', 'Superficial skin and throat'),
+        ('IG', 'Invasive GAS'),
+        ('ARF', 'ARF'),
+        ('ASPGN', 'APSGN'),                   
+    )
+    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS)
+    
+    Paper_title = models.CharField(max_length=200)
+    Paper_link = models.CharField(max_length=200)
+    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)])
+    Disease = models.CharField(max_length=60)
+    STUDY_DESIGNS = (
+        ('CST', 'Cross-sectional'),
+        ('P', 'Prospective'),
+        ('RP', 'Retrospective'),
+        ('PRP', 'Prospective and Retrospective'),
+        ('CS', 'Case series'),
+        ('R', 'Report'),
+        ('PC', 'Prospective cohort'),
+        ('RPR', 'Retrospective review'),
+        ('RA', 'Review article'), 
+        ('RPC', 'Retrospective cohort'),
+        ('O', 'Other'),        
+    )
+    Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS)
+    Study_design_other = models.CharField(max_length=200)
+    Study_description = models.CharField(max_length=200)
+    Case_definition = models.CharField(max_length=200)
+    Case_findings = models.CharField(max_length=200)
+    Case_findings_other = models.CharField(max_length=200)
+    Data_source = models.CharField(max_length=200)
+    Case_cap_meth = models.CharField(max_length=200)
+    Case_cap_meth_other = models.CharField(max_length=200)
+    Coverage = models.CharField(max_length=200)
+    Jurisdiction = models.CharField(max_length=200)
+    Specific_region = models.CharField(max_length=200)
+    Climate = models.CharField(max_length=200)
+    Aria_remote = models.CharField(max_length=200)
+    Population_group_strata = models.CharField(max_length=200)
+    Population_denom = models.CharField(max_length=200)
+    Age_original = models.CharField(max_length=200)
+    AGE_GROUPS = (
+        ('ALL', 'All'),
+        ('AD', 'Adults'),
+        ('C', 'Children'),
+        ('AL', 'Adolescents'),
+        ('EA', 'Elderly Adults'),
+    )
+    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS)
+    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5)
+    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5)
+    Burden_measure = models.CharField(max_length=200)
+    Ses_reported = models.BooleanField()
+    Mortality_data = models.BooleanField()
+    Method_limitations = models.BooleanField()    
+    Limitations_identified = models.CharField(max_length=200)
+    Other_points = models.CharField(max_length=200)
 
-    def __str__(self):
-        return "%s (%04d)" % (self.title, self.pub_year)
-
+# FVP: placeholder Results model to test the admin site with. Not intended to be the final product!
 class Results(models.Model):
     class Meta:
         verbose_name_plural = 'Results'
 
-    study = models.ForeignKey(Study, on_delete=models.CASCADE, )
+    study = models.ForeignKey(Studies, on_delete=models.CASCADE, )
     year_start = models.PositiveIntegerField()
     year_stop = models.PositiveIntegerField()
     ages = models.CharField(max_length=100, blank=True)
@@ -108,6 +161,3 @@ class Results(models.Model):
         else:
             return "%s: %d/%d" % (self.study, self.numerator, self.denominator)
     # etc
-
-class database_users(models.Model):
-    first_name = models.CharField(max_length=50)
