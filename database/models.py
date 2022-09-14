@@ -89,23 +89,22 @@ class Studies(models.Model):
         ('ARF', 'ARF'),
         ('ASPGN', 'APSGN'),                   
     )
-    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, verbose_name='Study Group')
-    
+    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group')
     Paper_title = models.CharField(max_length=200, verbose_name='Paper Title')
     Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download')
     Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year')
     Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (
+        ('CS', 'Case series'),
         ('CST', 'Cross-sectional'),
         ('P', 'Prospective'),
-        ('RP', 'Retrospective'),
         ('PRP', 'Prospective and Retrospective'),
-        ('CS', 'Case series'),
-        ('R', 'Report'),
         ('PC', 'Prospective cohort'),
-        ('RPR', 'Retrospective review'),
-        ('RA', 'Review article'), 
-        ('RPC', 'Retrospective cohort'),
+        ('R', 'Report'),
+        ('RP', 'Retrospective'),  
+        ('RPR', 'Retrospective review'), 
+        ('RPC', 'Retrospective cohort'),  
+        ('RA', 'Review article'),              
         ('O', 'Other'),        
     )
     Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS)
@@ -125,6 +124,7 @@ class Studies(models.Model):
     Population_group_strata = models.CharField(max_length=200, blank=True, default='')
     Population_denom = models.CharField(max_length=200, blank=True, default='')
     Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category (Original)')
+
     AGE_GROUPS = (
         ('ALL', 'All'),
         ('AD', 'Adults'),
@@ -150,10 +150,9 @@ class Results(models.Model):
     class Meta:
         verbose_name_plural = 'Results'
 
-    Study = models.ForeignKey(Studies, on_delete=models.CASCADE, )
-    Results_ID = models.CharField(max_length=20)
+    Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
     AGE_GROUPS = (
-        ('ALL', 'All'),
+        ('ALL', 'All ages'),
         ('AD', 'Adult'),
         ('C', 'Children'),
         ('AL', 'Adolescents'),
@@ -165,8 +164,6 @@ class Results(models.Model):
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
     Age_original = models.CharField(max_length=50, blank=True, verbose_name='Age Category (Original)')
     Population_gender = models.CharField(max_length=30, blank=True)
-
-
     Indigenous_status = models.CharField(max_length=20, blank=True, default='')
     Indigenous_population = models.CharField(max_length=30, blank=True, default='')
     Country = models.CharField(max_length=30, blank=True, default='')
@@ -180,16 +177,21 @@ class Results(models.Model):
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
     Measure = models.TextField(blank=True, default='')
     
-    # Change the next 4 fields to boolean? 
-    Interpolated_from_graph = ()
-    Age_standardisation	= ()
-    Dataset_name = 	()
-    Proportion = ()
-    Mortality_flag = models.BooleanField(blank=True, null=True)
-    Recurrent_ARF_flag = models.BooleanField(blank=True, null=True)
-    GAS_attributable_fraction = models.BooleanField(blank=True, null=True)
-    Defined_ARF	= models.BooleanField(blank=True, null=True)
-    Focus_of_study = models.TextField(blank=True, null=True)
+    BOOL_CHOICE = (
+        ('Y', 'Yes'),
+        ('N', 'No'),
+        ('?', 'N/A'),
+    )    
+    Interpolated_from_graph = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    Age_standardisation	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    Dataset_name = 	models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    Proportion = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    Mortality_flag = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    Recurrent_ARF_flag = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    GAS_attributable_fraction = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    Defined_ARF	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+
+    Focus_of_study = models.TextField(blank=True, default='')
     Notes = models.TextField(blank=True, default='')
 
     
