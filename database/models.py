@@ -57,10 +57,11 @@ class Users(AbstractBaseUser):
     profession = models.CharField(max_length=50, blank=True)
     institution = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=50, blank=True)
-    is_admin = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    #is_admin = models.BooleanField(default=False) # use the 'Is Superuser' option below
+    is_superuser = models.BooleanField(default=False, verbose_name='Is Administrator')
+    can_view_data = models.BooleanField(default=True, verbose_name='Allow View Access to Database')
+    is_active = models.BooleanField(default=True, verbose_name='Account Enabled')
+
     
     objects = CustomAccountManager()
     
@@ -81,18 +82,18 @@ class Studies(models.Model):
         verbose_name = 'Study'
         verbose_name_plural = 'Studies'
 
-    Unique_identifier = models.CharField(max_length=20)    
+    Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier')    
     STUDY_GROUPS = (
         ('SST', 'Superficial skin and throat'),
         ('IG', 'Invasive GAS'),
         ('ARF', 'ARF'),
         ('ASPGN', 'APSGN'),                   
     )
-    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS)
+    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, verbose_name='Study Group')
     
-    Paper_title = models.CharField(max_length=200)
-    Paper_link = models.CharField(max_length=200, blank=True)
-    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Paper_title = models.CharField(max_length=200, verbose_name='Paper Title')
+    Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download')
+    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year')
     Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (
         ('CST', 'Cross-sectional'),
@@ -108,22 +109,22 @@ class Studies(models.Model):
         ('O', 'Other'),        
     )
     Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS)
-    Study_design_other = models.CharField(max_length=200, blank=True)
-    Study_description = models.CharField(max_length=200, blank=True)
-    Case_definition = models.CharField(max_length=200, blank=True)
-    Case_findings = models.CharField(max_length=200, blank=True)
-    Case_findings_other = models.CharField(max_length=200, blank=True)
-    Data_source = models.CharField(max_length=200, blank=True)
-    Case_cap_meth = models.CharField(max_length=200, blank=True)
-    Case_cap_meth_other = models.CharField(max_length=200, blank=True)
-    Coverage = models.CharField(max_length=200, blank=True)
-    Jurisdiction = models.CharField(max_length=200, blank=True)
-    Specific_region = models.CharField(max_length=200, blank=True)
-    Climate = models.CharField(max_length=200, blank=True)
-    Aria_remote = models.CharField(max_length=200, blank=True)
-    Population_group_strata = models.CharField(max_length=200, blank=True)
-    Population_denom = models.CharField(max_length=200, blank=True)
-    Age_original = models.CharField(max_length=200, blank=True)
+    Study_design_other = models.CharField(max_length=200, blank=True, default='')
+    Study_description = models.CharField(max_length=200, blank=True, default='')
+    Case_definition = models.CharField(max_length=200, blank=True, default='')
+    Case_findings = models.CharField(max_length=200, blank=True, default='')
+    Case_findings_other = models.CharField(max_length=200, blank=True, default='')
+    Data_source = models.CharField(max_length=200, blank=True, default='')
+    Case_cap_meth = models.CharField(max_length=200, blank=True, default='')
+    Case_cap_meth_other = models.CharField(max_length=200, blank=True, default='')
+    Coverage = models.CharField(max_length=200, blank=True, default='')
+    Jurisdiction = models.CharField(max_length=200, blank=True, default='')
+    Specific_region = models.CharField(max_length=200, blank=True, default='')
+    Climate = models.CharField(max_length=200, blank=True, default='')
+    Aria_remote = models.CharField(max_length=200, blank=True, default='')
+    Population_group_strata = models.CharField(max_length=200, blank=True, default='')
+    Population_denom = models.CharField(max_length=200, blank=True, default='')
+    Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category (Original)')
     AGE_GROUPS = (
         ('ALL', 'All'),
         ('AD', 'Adults'),
@@ -131,20 +132,19 @@ class Studies(models.Model):
         ('AL', 'Adolescents'),
         ('EA', 'Elderly Adults'),
     )
-    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True)
+    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category')
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Burden_measure = models.CharField(max_length=200, blank=True)
-    Ses_reported = models.BooleanField(blank=True)
-    Mortality_data = models.BooleanField(blank=True)
-    Method_limitations = models.BooleanField(blank=True)    
+    Ses_reported = models.BooleanField(null=True, blank=True)
+    Mortality_data = models.BooleanField(null=True, blank=True)
+    Method_limitations = models.BooleanField(null=True, blank=True)    
     Limitations_identified = models.CharField(max_length=200, blank=True)
     Other_points = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return "%s (%s)" % (self.Paper_title, self.Year)
 
-# FVP: placeholder Results model to test the admin site with. Not intended to be the final product!
 # LH: Rough draft for Results model. Needs further work with cleaner database. Some fields may be redundant upon cleanup.  
 class Results(models.Model):
     class Meta:
@@ -160,42 +160,42 @@ class Results(models.Model):
         ('I', 'Infant'),
         ('M', 'Mix'),
     )
-    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True)
-    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
-    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
-    Age_original = models.CharField(max_length=50, blank=True)  
+    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category')
+    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum Age (years)')
+    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
+    Age_original = models.CharField(max_length=50, blank=True, verbose_name='Age Category (Original)')
     Population_gender = models.CharField(max_length=30, blank=True)
 
 
-    Indigenous_status = models.CharField(max_length=20, blank=True)
-    Indigenous_population = models.CharField(max_length=30, blank=True)
-    Country = models.CharField(max_length=30, blank=True)
-    Jurisdiction = models.CharField(max_length=30, blank=True)
-    Specific_location = models.CharField(max_length=100, blank=True)
+    Indigenous_status = models.CharField(max_length=20, blank=True, default='')
+    Indigenous_population = models.CharField(max_length=30, blank=True, default='')
+    Country = models.CharField(max_length=30, blank=True, default='')
+    Jurisdiction = models.CharField(max_length=30, blank=True, default='')
+    Specific_location = models.CharField(max_length=100, blank=True, default='')
     Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
     Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
     Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Numerator = models.PositiveIntegerField(null=True, blank=True)
     Denominator = models.PositiveIntegerField(null=True, blank=True)    
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
-    Measure = models.TextField(blank=True)
+    Measure = models.TextField(blank=True, default='')
     
     # Change the next 4 fields to boolean? 
     Interpolated_from_graph = ()
     Age_standardisation	= ()
     Dataset_name = 	()
     Proportion = ()
-    Mortality_flag = models.BooleanField(blank=True)
-    Recurrent_ARF_flag = models.BooleanField(blank=True)
-    GAS_attributable_fraction = models.BooleanField(blank=True)
-    Defined_ARF	= models.BooleanField(blank=True)
-    Focus_of_study = models.TextField(blank=True)
-    Notes = models.TextField(blank=True)
+    Mortality_flag = models.BooleanField(blank=True, null=True)
+    Recurrent_ARF_flag = models.BooleanField(blank=True, null=True)
+    GAS_attributable_fraction = models.BooleanField(blank=True, null=True)
+    Defined_ARF	= models.BooleanField(blank=True, null=True)
+    Focus_of_study = models.TextField(blank=True, null=True)
+    Notes = models.TextField(blank=True, default='')
 
     
     def __str__(self):
-        if self.point_estimate:
-            return "%s: %0.2f%%" % (self.study, self.point_estimate)
+        if self.Point_estimate:
+            return "%s: %0.2f%%" % (self.Study, self.Point_estimate)
         else:
-            return "%s: %d/%d" % (self.study, self.numerator, self.denominator)
+            return "%s: %d/%d" % (self.Study, self.Numerator, self.Denominator)
     # etc
