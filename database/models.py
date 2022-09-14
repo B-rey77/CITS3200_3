@@ -88,26 +88,26 @@ class Studies(models.Model):
         ('ARF', 'ARF'),
         ('ASPGN', 'APSGN'),                   
     )
-    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS)
+    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True)
     
     Paper_title = models.CharField(max_length=200)
     Paper_link = models.CharField(max_length=200, blank=True)
     Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
     Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (
+        ('CS', 'Case series'),
         ('CST', 'Cross-sectional'),
         ('P', 'Prospective'),
-        ('RP', 'Retrospective'),
         ('PRP', 'Prospective and Retrospective'),
-        ('CS', 'Case series'),
-        ('R', 'Report'),
         ('PC', 'Prospective cohort'),
-        ('RPR', 'Retrospective review'),
-        ('RA', 'Review article'), 
-        ('RPC', 'Retrospective cohort'),
+        ('R', 'Report'),
+        ('RP', 'Retrospective'),  
+        ('RPR', 'Retrospective review'), 
+        ('RPC', 'Retrospective cohort'),  
+        ('RA', 'Review article'),              
         ('O', 'Other'),        
     )
-    Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS)
+    Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS,blank=True)
     Study_design_other = models.CharField(max_length=200, blank=True)
     Study_description = models.CharField(max_length=200, blank=True)
     Case_definition = models.CharField(max_length=200, blank=True)
@@ -150,10 +150,9 @@ class Results(models.Model):
     class Meta:
         verbose_name_plural = 'Results'
 
-    Study = models.ForeignKey(Studies, on_delete=models.CASCADE, )
-    Results_ID = models.CharField(max_length=20)
+    Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
     AGE_GROUPS = (
-        ('ALL', 'All'),
+        ('ALL', 'All ages'),
         ('AD', 'Adult'),
         ('C', 'Children'),
         ('AL', 'Adolescents'),
@@ -165,8 +164,6 @@ class Results(models.Model):
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Age_original = models.CharField(max_length=50, blank=True)  
     Population_gender = models.CharField(max_length=30, blank=True)
-
-
     Indigenous_status = models.CharField(max_length=20, blank=True)
     Indigenous_population = models.CharField(max_length=30, blank=True)
     Country = models.CharField(max_length=30, blank=True)
@@ -180,22 +177,25 @@ class Results(models.Model):
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
     Measure = models.TextField(blank=True)
     
-    # Change the next 4 fields to boolean? 
-    Interpolated_from_graph = ()
-    Age_standardisation	= ()
-    Dataset_name = 	()
-    Proportion = ()
-    Mortality_flag = models.BooleanField(blank=True)
-    Recurrent_ARF_flag = models.BooleanField(blank=True)
-    GAS_attributable_fraction = models.BooleanField(blank=True)
-    Defined_ARF	= models.BooleanField(blank=True)
+    BOOL_CHOICE = (
+        ('Y', 'Yes'),
+        ('N', 'No'),
+    )    
+    Interpolated_from_graph = models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    Age_standardisation	= models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    Dataset_name = 	models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    Proportion = models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    Mortality_flag = models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    Recurrent_ARF_flag = models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    GAS_attributable_fraction = models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
+    Defined_ARF	= models.CharField(max_length=1,choices=BOOL_CHOICE,blank=True)
     Focus_of_study = models.TextField(blank=True)
     Notes = models.TextField(blank=True)
 
     
     def __str__(self):
-        if self.point_estimate:
-            return "%s: %0.2f%%" % (self.study, self.point_estimate)
+        if self.Point_estimate:
+            return "%s: %0.2f%%" % (self.Study, self.Point_estimate)
         else:
-            return "%s: %d/%d" % (self.study, self.numerator, self.denominator)
+            return "%s: %d/%d" % (self.Study, self.Numerator, self.Denominator)
     # etc
