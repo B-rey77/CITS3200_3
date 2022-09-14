@@ -4,6 +4,8 @@
 {% block extraheader %}
 
 <link rel="stylesheet" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
+<link rel="stylesheet" href="{% static 'css/admin-override.css' %}">
+
 {% block dark-mode-vars %}
   <link rel="stylesheet" href="{% static "admin/css/dark_mode.css" %}">
 {% endblock %}
@@ -26,7 +28,7 @@
 {% block main %}
 
 <!-- Container -->
-<div id="container">
+<div id="container" class="admin">
 
     {% if not is_popup %}
     <!-- Header -->
@@ -102,9 +104,12 @@
           <br class="clear">
         </div>
         <!-- END Content -->
-        {% block footer %}<div id="footer"></div>{% endblock %}
       </div>
     </div>
+    {% if not is_popup %}
+      {% include 'database/footer.html' %}
+    {% endif %}
 </div>
 <!-- END Container -->
 {% endblock main %}
+{% block myfooter %}{% endblock %}

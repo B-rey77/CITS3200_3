@@ -39,9 +39,11 @@
 
     {% endblock %}
 
+    {% block myfooter %}
     {% if not is_popup %}
     {% include 'database/footer.html' %}
     {% endif %}
+    {% endblock %}
   </body>
 
   <script> 
