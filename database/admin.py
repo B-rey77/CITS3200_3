@@ -20,14 +20,29 @@ class ViewModelAdmin(ModelAdmin):
         return request.user.is_active and request.user.can_view_data
     
 class StudiesAdmin(ViewModelAdmin):
-    list_display = ('Unique_identifier','Study_group','Paper_title','Paper_link','Year','Disease','Study_design','Study_design_other','Study_description','Case_definition','Case_findings','Case_findings_other','Data_source','Case_cap_meth','Case_cap_meth_other','Coverage','Jurisdiction','Specific_region',	'Climate',	'Aria_remote',	'Population_group_strata',	'Population_denom',	'Age_original',	'Age_general',	'Age_min',	'Age_max',	'Burden_measure',	'Ses_reported',	'Mortality_data',	'Method_limitations',	'Limitations_identified',	'Other_points')
-    list_filter = ('Study_design', 'Study_group', 'Age_general')
+    list_display = ('Unique_identifier','Study_group','Paper_title','Paper_link',
+        'Year','Disease','Study_design','Study_design_other','Study_description',
+        'Case_definition','Case_findings','Case_findings_other','Data_source','Case_cap_meth',
+        'Case_cap_meth_other','Coverage','Jurisdiction','Specific_region',	'Climate',	'Aria_remote',
+        'Population_group_strata',	'Population_denom',	'Age_original', 'Burden_measure',	'Ses_reported',	'Mortality_data',
+        'Method_limitations',	'Limitations_identified',	'Other_points')
+    list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
     search_fields = ('Paper_title', 'Study_description')
 
 class ResultsAdmin(ViewModelAdmin):
-    list_display = ('Study', 'Age_general', 'Age_min', 'Age_max', 'Age_general', 'Age_min', 'Age_max', 'Age_original', 'Population_gender', 'Indigenous_status', 'Indigenous_population', 'Country', 'Jurisdiction', 'Specific_location', 'Year_start',	'Year_stop', 'Observation_time_years',	'Numerator', 'Denominator',	'Point_estimate', 'Measure', 'Interpolated_from_graph', 'Age_standardisation',	'Dataset_name',	'Proportion', 'Mortality_flag',	'Recurrent_ARF_flag','GAS_attributable_fraction', 'Defined_ARF', 'Focus_of_study',	'Notes')
-    list_filter = ('Age_general', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name', 'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
-    search_fields = ('Study', 'Age_general', 'Age_min', 'Age_max', 'Age_original', 'Year_start', 'Year_stop')
+    def get_study(self, obj):
+        return obj.Study.Paper_title
+
+    def get_study_group(self, obj):
+        return obj.Study.Study_group
+    # fvp: removed soem fields for demo: , 'Mortality_flag',	'Recurrent_ARF_flag','GAS_attributable_fraction', 'Defined_ARF', 'Focus_of_study', 
+    list_display = ('get_study', 'get_study_group', 'Age_general', 'Population_gender', 'Indigenous_population',
+         'Country', 'Jurisdiction', 'Specific_location', 'Year_start',	'Year_stop', 'Observation_time_years',	'Numerator', 'Denominator',
+    	'Point_estimate', 'Measure', 'Interpolated_from_graph', 'Age_standardisation',	'Dataset_name',	'Proportion', 'Notes')
+    list_filter = ('Age_general', 'Age_original', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
+        'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
+    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction',
+        'Population_gender', 'Indigenous_population' )
 
 from database.admin_site import admin_site # Custom admin site
 
