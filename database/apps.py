@@ -5,4 +5,4 @@ class DatabaseConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'database'
     label = 'database'
-    verbose_name = 'GAS Database'
+    verbose_name = 'Strep A Database'

@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.contrib import admin
 
 # Create your models here.
 
@@ -210,10 +211,33 @@ class Results(models.Model):
     Focus_of_study = models.TextField(blank=True, default='')
     Notes = models.TextField(blank=True, default='')
 
-    
-    def __str__(self):
-        if self.Point_estimate:
-            return "%s: %0.2f%%" % (self.Study, self.Point_estimate)
+    def get_burden(self):
+        if self.Point_estimate is not None:
+            return "%0.2f%%" % self.Point_estimate
+        elif self.Numerator is not None and self.Denominator is not None:
+            return "%d/%d" % (self.Numerator, self.Denominator)
         else:
-            return "%s: %d/%d" % (self.Study, self.Numerator, self.Denominator)
-    # etc
+            return 'Unknown'
+
+    @admin.display(ordering='Age_general', description='Age Bracket')
+    def get_age(self):
+        if self.Age_min is not None:
+            if self.Age_max is not None:
+                res = '%d to %d years old' % (self.Age_min, self.Age_max)
+            else:
+                res = '%d years old and older' % self.Age_min
+        elif self.Age_max is not None:
+            res = 'Up to %d years old' % self.Age_max
+        else:
+            res = None
+        
+        if self.Age_general:
+            if res:
+                return '%s (%s)' % (self.Age_general, res)
+            else:
+                return self.Age_general
+        else:
+            return res or 'Any'
+
+    def __str__(self):
+        return '%s (Burden: %s)' % (self.Study.Paper_title, self.get_burden())
