@@ -6,9 +6,11 @@ from database.models import Users, Studies, Results # Custom admin form imported
 
 # The Custom Admin user model
 class AccountAdmin(UserAdmin):
-    list_display = ('email', 'username', 'date_joined', 'is_active', 'is_superuser')
-    search_fields = ('email', 'username')
+    list_display = ('email', 'first_name', 'last_name', 'date_joined', 'is_admin', 'is_superuser')
+    search_fields = ['email']
     readonly_fields = ('id', 'date_joined')
+    
+    ordering = ['email']
     
     filter_horizontal = ()
     list_filter = ()
@@ -49,4 +51,4 @@ from database.admin_site import admin_site # Custom admin site
 admin_site.register(Users, AccountAdmin)
 admin_site.register(Studies, StudiesAdmin)
 admin_site.register(Results, ResultsAdmin)
-admin_site.unregister(Group)
+# admin_site.unregister(Group)
