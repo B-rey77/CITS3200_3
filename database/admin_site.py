@@ -10,6 +10,6 @@ class StrepAAdminSite(admin.AdminSite):
     def has_permission(self, request):
         # all users have implicit permission to access the admin site (because it is not just for admins)
         # although non-admin users will not be able to simply view anything other than studies/results
-        return request.user.is_active and request.user.can_view_data
+        return request.user.is_active #and request.user.can_view_data
 
 admin_site = StrepAAdminSite()

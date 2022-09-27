@@ -8,7 +8,7 @@ from django.contrib import admin
 
 class CustomAccountManager(BaseUserManager):
     
-    def create_superuser(self, email, username, password, **other_fields):
+    def create_superuser(self, email, first_name, last_name, password, **other_fields):
     
         other_fields.setdefault('is_admin', True)
         other_fields.setdefault('is_superuser', True)
@@ -22,62 +22,54 @@ class CustomAccountManager(BaseUserManager):
                 'Superuser must be assigned to is_superuser=True')
         
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username,
+        user = self.model(email=email, first_name=first_name, last_name=last_name, 
                           **other_fields)
         user.set_password(password)
         user.save(using=self._db)
         
         return user
 
-    def create_user(self, email, username, password, **other_fields):
+    def create_user(self, email, first_name, last_name, password, **other_fields):
         
         if not email:
             raise ValueError(_('You must provide an email address'))
-        if not username:
-            raise ValueError(_('You must provide a user name.'))
         
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username,
+        user = self.model(email=email, first_name=first_name, last_name=last_name,
                           **other_fields)
         user.set_password(password)
         user.save(using=self._db)
         
         return user
-        
+             
 class Users(AbstractBaseUser):
-
-    class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
     
     email = models.EmailField(_('email'), max_length=100, unique=True)
-    username = models.CharField(max_length=30, unique=True)
-    first_name = models.CharField(max_length=50, blank=True)
-    last_name = models.CharField(max_length=50, blank=True)
+    first_name = models.CharField(max_length=50, blank=False)
+    last_name = models.CharField(max_length=50, blank=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     profession = models.CharField(max_length=50, blank=True)
     institution = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=50, blank=True)
-    #is_admin = models.BooleanField(default=False) # use the 'Is Superuser' option below
-    is_superuser = models.BooleanField(default=False, verbose_name='Is Administrator')
-    can_view_data = models.BooleanField(default=True, verbose_name='Allow View Access to Database')
-    is_active = models.BooleanField(default=True, verbose_name='Account Enabled')
-
+    is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     
     objects = CustomAccountManager()
     
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
     
     def __str__(self):
-        return self.username
+        return self.email
     
     def has_perm(self, perm, obj=None):
         return self.is_superuser
     
     def has_module_perms(self, app_label):
         return True
-    
+     
 class Studies(models.Model):
     class Meta:
         verbose_name = 'Study'
