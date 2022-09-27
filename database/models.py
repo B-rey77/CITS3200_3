@@ -83,7 +83,7 @@ class Studies(models.Model):
         verbose_name = 'Study'
         verbose_name_plural = 'Studies'
 
-    Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier')    
+    Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier', help_text='Internal use only')    
     STUDY_GROUPS = (
         ('SST', 'Superficial skin and throat'),
         ('IG', 'Invasive GAS'),
@@ -225,7 +225,7 @@ class Results(models.Model):
             if self.Age_max is not None:
                 res = '%d to %d years old' % (self.Age_min, self.Age_max)
             else:
-                res = '%d years old and older' % self.Age_min
+                res = '%d years and older' % self.Age_min
         elif self.Age_max is not None:
             res = 'Up to %d years old' % self.Age_max
         else:
