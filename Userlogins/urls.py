@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('database/', admin.site.urls),
-    path('', include('database.urls')) #trigger urls.py in database app folder
+    path('', include('database.urls')), #trigger urls.py in database app folder
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon/favicon.ico')))
 ]
