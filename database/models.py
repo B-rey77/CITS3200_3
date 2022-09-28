@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.contrib import admin
 
 # Create your models here.
 
@@ -74,7 +75,7 @@ class Studies(models.Model):
         verbose_name = 'Study'
         verbose_name_plural = 'Studies'
 
-    Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier')    
+    Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier', help_text='Internal use only')    
     STUDY_GROUPS = (
         ('SST', 'Superficial skin and throat'),
         ('IG', 'Invasive GAS'),
@@ -139,6 +140,7 @@ class Studies(models.Model):
 
     Limitations_identified = models.CharField(max_length=200, blank=True)
     Other_points = models.CharField(max_length=200, blank=True)
+    Notes = models.TextField(blank=True, default='')
 
     def __str__(self):
         return "%s (%s)" % (self.Paper_title, self.Year)
@@ -148,7 +150,7 @@ class Results(models.Model):
     class Meta:
         verbose_name_plural = 'Results'
 
-    Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
+    Study = models.ForeignKey(Studies, on_delete=models.CASCADE, null=True, blank=True)
     AGE_GROUPS = (
         ('ALL', 'All ages'),
         ('AD', 'Adult'),
@@ -179,6 +181,7 @@ class Results(models.Model):
     Denominator = models.PositiveIntegerField(null=True, blank=True)  
 
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
+    Point_estimate_original = models.CharField(max_length=30, blank=True, default='')  # some fields have non-numeric values like "14% (8)" or other weird things
 
     Measure = models.TextField(blank=True, default='')
 
@@ -202,10 +205,35 @@ class Results(models.Model):
     Focus_of_study = models.TextField(blank=True, default='')
     Notes = models.TextField(blank=True, default='')
 
-    
-    def __str__(self):
-        if self.Point_estimate:
-            return "%s: %0.2f%%" % (self.Study, self.Point_estimate)
+    def get_burden(self):
+        if self.Point_estimate is not None:
+            return "%0.2f%%" % self.Point_estimate
+        elif self.Numerator is not None and self.Denominator is not None:
+            return "%d/%d" % (self.Numerator, self.Denominator)
         else:
-            return "%s: %d/%d" % (self.Study, self.Numerator, self.Denominator)
-    # etc
+            return 'Unknown'
+
+    @admin.display(ordering='Age_general', description='Age Bracket')
+    def get_age(self):
+        if self.Age_min is not None:
+            if self.Age_max is not None:
+                res = '%d to %d years old' % (self.Age_min, self.Age_max)
+            else:
+                res = '%d years and older' % self.Age_min
+        elif self.Age_max is not None:
+            res = 'Up to %d years old' % self.Age_max
+        else:
+            res = None
+        
+        if self.Age_general:
+            if res:
+                return '%s (%s)' % (self.Age_general, res)
+            else:
+                return self.Age_general
+        else:
+            return res or 'Any'
+
+    def __str__(self):
+        if not self.Study:
+            return "Burden: %s" % (self.get_burden(), )
+        return '%s (Burden: %s)' % (self.Study.Paper_title, self.get_burden())
