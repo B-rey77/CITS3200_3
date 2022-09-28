@@ -28,7 +28,7 @@ class StudiesAdmin(ViewModelAdmin):
         'Disease', 'Study_description',
         'Case_definition','Case_findings', 'Data_source','Case_cap_meth',
         'Coverage','Jurisdiction', 'Climate', 'Aria_remote',
-        'Population_group_strata',	'Age_original', 'Burden_measure')
+        'Population_group_strata',	'Age_original', 'Burden_measure', 'Notes')
     list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
     ordering = ('Paper_title', )
     search_fields = ('Paper_title', 'Study_description')
@@ -43,11 +43,15 @@ class StudiesAdmin(ViewModelAdmin):
 class ResultsAdmin(ViewModelAdmin):
     @admin.display(ordering='Study__Paper_title', description='Study')
     def get_study(self, obj):
-        return obj.Study.Paper_title
+        if obj.Study:
+            return obj.Study.Paper_title
 
     @admin.display(ordering='Study__Study_group', description='Study Group')
     def get_study_group(self, obj):
-        return obj.Study.Study_group
+        if obj.Study:
+            return obj.Study.Study_group
+        else:
+            return 'Study Unknown'
 
     @admin.display(description='Disease Burden')
     def get_measure(self, obj):
@@ -64,10 +68,10 @@ class ResultsAdmin(ViewModelAdmin):
          'Country', 'Jurisdiction', 'Specific_location', 'Year_start',	'Year_stop', 'Observation_time_years',
          'Interpolated_from_graph', 'Age_standardisation',	'Dataset_name',	'Proportion', 'Notes', 'get_study')
 
-    list_filter = ('Age_general', 'Age_original', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
+    list_filter = ('Study__Study_group', 'Age_general', 'Age_original', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
-    ordering = ('Study__Study_group', )    
+    ordering = ('-Study__Study_group', )    
 
     search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction',
         'Population_gender', 'Indigenous_population' )

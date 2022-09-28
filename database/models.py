@@ -140,6 +140,7 @@ class Studies(models.Model):
 
     Limitations_identified = models.CharField(max_length=200, blank=True)
     Other_points = models.CharField(max_length=200, blank=True)
+    Notes = models.TextField(blank=True, default='')
 
     def __str__(self):
         return "%s (%s)" % (self.Paper_title, self.Year)
@@ -149,7 +150,7 @@ class Results(models.Model):
     class Meta:
         verbose_name_plural = 'Results'
 
-    Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
+    Study = models.ForeignKey(Studies, on_delete=models.CASCADE, null=True, blank=True)
     AGE_GROUPS = (
         ('ALL', 'All ages'),
         ('AD', 'Adult'),
@@ -180,6 +181,7 @@ class Results(models.Model):
     Denominator = models.PositiveIntegerField(null=True, blank=True)  
 
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
+    Point_estimate_original = models.CharField(max_length=30, blank=True, default='')  # some fields have non-numeric values like "14% (8)" or other weird things
 
     Measure = models.TextField(blank=True, default='')
 
@@ -232,4 +234,6 @@ class Results(models.Model):
             return res or 'Any'
 
     def __str__(self):
+        if not self.Study:
+            return "Burden: %s" % (self.get_burden(), )
         return '%s (Burden: %s)' % (self.Study.Paper_title, self.get_burden())
