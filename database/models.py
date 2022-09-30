@@ -10,13 +10,12 @@ class CustomAccountManager(BaseUserManager):
     
     def create_superuser(self, email, first_name, last_name, password, **other_fields):
     
-        other_fields.setdefault('is_admin', True)
         other_fields.setdefault('is_superuser', True)
         other_fields.setdefault('is_staff', True)
         
-        if other_fields.get('is_admin') is not True:
+        if other_fields.get('is_staff') is not True:
             raise ValueError(
-                'Superuser must be assigned to is_admin=True')
+                'Superuser must be assigned to is_staff=True')
         if other_fields.get('is_superuser') is not True:
             raise ValueError(
                 'Superuser must be assigned to is_superuser=True')
@@ -51,10 +50,9 @@ class Users(AbstractBaseUser):
     profession = models.CharField(max_length=50, blank=True)
     institution = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=50, blank=True)
-    is_admin = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(_('Superuser status'), default=False, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
+    is_staff = models.BooleanField(_('Staff status'), default=False, help_text=_('Designates whether the user can log into this admin site.'))
+    is_active = models.BooleanField(_('Active'), default=True, help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
     
     objects = CustomAccountManager()
     

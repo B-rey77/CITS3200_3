@@ -22,11 +22,18 @@
 					Home
 				</a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="{% url 'admin:database_results_changelist' %}">
-					Result Search
-				</a>
-			</li>
+			{% if request.user.is_authenticated %}
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'admin:database_studies_changelist' %}">
+						Result Search
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'visitor' %}">
+						Profile
+					</a>
+				</li>
+			{% endif %}
 		</ul>
 	</div>
 	{% if request.user.is_authenticated %}
