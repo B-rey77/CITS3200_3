@@ -12,13 +12,13 @@ class StrepAAdminSite(admin.AdminSite):
 		# although non-admin users will not be able to simply view anything other than studies/results
 		return request.user.is_active #and request.user.can_view_data
 
-	def get_app_list(self, request):
+	def get_app_list(self, request, app_label=None):
 		"""
 		Return a sorted list of all the installed apps that have been
 		registered in this site.
 		"""
 		ordering = {
-			"Userss": 1,
+			"Users": 1,
 			"Studies": 2,
 			"Results": 3
 		}

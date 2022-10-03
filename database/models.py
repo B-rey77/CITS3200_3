@@ -42,6 +42,8 @@ class CustomAccountManager(BaseUserManager):
         return user
              
 class Users(AbstractBaseUser):
+    class Meta:
+        verbose_name_plural = 'Users'
     
     email = models.EmailField(_('email'), max_length=100, unique=True)
     first_name = models.CharField(max_length=50, blank=False)
