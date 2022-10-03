@@ -26,24 +26,72 @@ class AccountAdmin(ActionButtonsMixin, UserAdmin):
 class ViewModelAdmin(ActionButtonsMixin, ModelAdmin):
     def has_view_permission(self, request, obj=None):
         return request.user.is_active #and request.user.can_view_data
+
+def get_age_html(obj):
+    if obj.Age_min is not None and obj.Age_min > 0:
+        if obj.Age_max is not None and obj.Age_max < 999:
+            res = '%d to %d years old' % (obj.Age_min, obj.Age_max)
+        else:
+            res = '%d years and older' % obj.Age_min
+    elif obj.Age_max is not None and obj.Age_max < 999:
+        res = 'Up to %d years old' % obj.Age_max
+    else:
+        res = None
+    
+    if obj.Age_general:
+        age_general = obj.Age_general
+        for age_id, age_desc in obj.AGE_GROUPS:
+            if obj.Age_general == age_id:
+                age_general = age_desc
+                break
+        if res:
+            return format_html('<b>{}</b> ({})', age_general, res)
+        else:
+            return format_html('<b>{}</b>', age_general)
+    else:
+        return res or 'Any'
     
 class StudiesAdmin(ViewModelAdmin):
-    list_display = ('Paper_title', 'Year', 'Study_group', 'Unique_identifier', 'get_paper_link',
-        'Disease', 'Study_description',
-        'Case_definition','Case_findings', 'Data_source','Case_cap_meth',
-        'Coverage','Jurisdiction', 'Climate', 'Aria_remote',
-        'Population_group_strata',	'Age_original', 'Burden_measure', 'Notes')
+    list_display = ('Paper_title', 'get_info_html', 'get_location_html', 'get_population_html', 'get_age_html',
+        'get_case_html', 'Burden_measure', 'Notes', 'get_flags_html')
     list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
-    ordering = ('Paper_title', )
+    ordering = ('Paper_title', 'Study_group')
     search_fields = ('Paper_title', 'Study_description')
     search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
 
-    @admin.display(ordering='Paper_title', description='Link')
-    def get_paper_link(self, obj):
-        if not obj.Paper_link or obj.Paper_link.upper() == 'N/A':
-            return 'N/A'
-        return format_html('<a href="{}">Download</a>', obj.Paper_link)
+    @admin.display(ordering='Publication_year', description='Study Info')
+    def get_info_html(self, obj):
+        return render_to_string('database/studies_info.html', context={'row': obj})
 
+    @admin.display(description='Flags')
+    def get_flags_html(self, obj):
+        return render_to_string('database/studies_flags.html', context={'row': obj})
+
+    
+    @admin.display(description='Population')
+    def get_population_html(self, obj):
+        return format_html('<div><b>Group Strata: </b>{}</div><br><div><b>Denom: </b>{}</div>',
+            obj.Population_group_strata, obj.Population_denom
+        )
+    
+    @admin.display(description='Geography', ordering='Specific_region')
+    def get_location_html(self, obj):
+        return format_html('<div><b>Specific Region: </b>{}<br><b>Jurisdiction: </b>{}<br>'
+            '<b>Aria Remote: </b>{}<br><b>Climate: </b>{}<br><b>Coverage: </b>{}</div>',
+            obj.Specific_region, obj.Jurisdiction,
+            obj.Aria_remote, obj.Climate, obj.Coverage
+        )
+
+    @admin.display(description='Case Info', ordering='Case_definition')
+    def get_case_html(self, obj):
+        return format_html('<div><b>Case Definition: </b>{}<br><b>Case Cap Meth.: </b>{}<br>'
+            '<b>Case Findings: </b>{}<br><b>Data Source: </b>{}</div>',
+            obj.Case_definition, obj.Case_cap_meth, obj.Case_findings, obj.Data_source,
+        )
+
+    @admin.display(ordering='Age_general', description='Age Bracket')
+    def get_age_html(self, obj):
+        return get_age_html(obj)
 
 class ResultsAdmin(ViewModelAdmin):
     @admin.display(ordering='Study__Paper_title', description='Study')
@@ -68,16 +116,16 @@ class ResultsAdmin(ViewModelAdmin):
             obj.get_burden(), obj.Measure
         )
 
-    @admin.display(description='Population')
+    @admin.display(description='Population', ordering='Population_gender')
     def get_population_html(self, obj):
         return format_html('<div><b>Gender: </b>{}</div><br><div><b>Indigenous: </b>{}<br>{}</div>',
             obj.Population_gender, obj.Indigenous_status, obj.Indigenous_population
         )
     
-    @admin.display(description='Location')
+    @admin.display(description='Location', ordering='Specific_location')
     def get_location_html(self, obj):
-        return format_html('<div><b>Country: </b>{}<br><b>Jurisdiction: </b>{}<br><b>Specific: </b>{}</div>',
-            obj.Country, obj.Jurisdiction, obj.Specific_location
+        return format_html('<div><b>Specific: </b>{}<br><b>Jurisdiction: </b>{}<br><b>Country: </b>{}</div>',
+            obj.Specific_location, obj.Jurisdiction, obj.Country,
         )
 
     @admin.display(description='Flags')
@@ -92,13 +140,16 @@ class ResultsAdmin(ViewModelAdmin):
             obj.Year_start,
             obj.Year_stop
         )
-                
+
+    @admin.display(ordering='Age_general', description='Age Bracket')
+    def get_age_html(self, obj):
+        return get_age_html(obj)
 
     # fvp: removed soem fields for demo: , 'Mortality_flag',	'Recurrent_ARF_flag','GAS_attributable_fraction', 'Defined_ARF', 'Focus_of_study', 
-    list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age',
+    list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age_html',
         'get_population_html', 'get_location_html', 'get_study', 'Notes', 'get_flags_html', )
 
-    list_filter = ('Study__Study_group', 'Age_general', 'Age_original', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
+    list_filter = ('Study__Study_group', 'Age_general', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
     ordering = ('-Study__Study_group', )    

@@ -75,7 +75,7 @@ class Studies(models.Model):
         verbose_name = 'Study'
         verbose_name_plural = 'Studies'
 
-    Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier', help_text='Internal use only')    
+    Unique_identifier = models.CharField(max_length=20, null=True, blank=True, verbose_name='Unique Identifier', help_text='Internal use only')    
     STUDY_GROUPS = (
         ('SST', 'Superficial skin and throat'),
         ('IG', 'Invasive GAS'),
@@ -108,17 +108,19 @@ class Studies(models.Model):
     Case_definition = models.CharField(max_length=200, blank=True, default='')
     Case_findings = models.CharField(max_length=200, blank=True, default='')
     Case_findings_other = models.CharField(max_length=200, blank=True, default='')
-    Data_source = models.CharField(max_length=200, blank=True, default='')
     Case_cap_meth = models.CharField(max_length=200, blank=True, default='')
     Case_cap_meth_other = models.CharField(max_length=200, blank=True, default='')
+
+    Data_source = models.CharField(max_length=200, blank=True, default='')
     Coverage = models.CharField(max_length=200, blank=True, default='')
+
     Jurisdiction = models.CharField(max_length=200, blank=True, default='')
     Specific_region = models.CharField(max_length=200, blank=True, default='')
     Climate = models.CharField(max_length=200, blank=True, default='')
     Aria_remote = models.CharField(max_length=200, blank=True, default='')
+
     Population_group_strata = models.CharField(max_length=200, blank=True, default='')
     Population_denom = models.CharField(max_length=200, blank=True, default='')
-    Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category (Original)')
 
     AGE_GROUPS = (
         ('ALL', 'All'),
@@ -131,16 +133,22 @@ class Studies(models.Model):
 
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category (Original)')
 
     Burden_measure = models.CharField(max_length=200, blank=True)
 
     Ses_reported = models.BooleanField(null=True, blank=True)
     Mortality_data = models.BooleanField(null=True, blank=True)
-    Method_limitations = models.BooleanField(null=True, blank=True)    
+    Method_limitations = models.BooleanField(null=True, blank=True)
 
     Limitations_identified = models.CharField(max_length=200, blank=True)
     Other_points = models.CharField(max_length=200, blank=True)
     Notes = models.TextField(blank=True, default='')
+
+    def get_flags(self):
+        return (
+            {'field': field, 'value': getattr(self, field.name)} for field in self._meta.get_fields() if isinstance(field, models.BooleanField)
+        )
 
     def __str__(self):
         return "%s (%s)" % (self.Paper_title, self.Year)
