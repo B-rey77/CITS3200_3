@@ -40,6 +40,11 @@ def parse_django_field_value(model, field, value):
         djfield = model._meta.get_field(field)
 
         if isinstance(djfield, (fields.CharField, fields.TextField)):
+            if djfield.choices:
+                for c in djfield.choices:
+                    if value.lower() == c[1].lower() or value.lower() == c[0].lower():
+                        return (c[0], True)
+                return (value, False)
             return (value or '', True)
 
         if value.lower() in NULL_VALUES:
@@ -109,7 +114,10 @@ class Command(BaseCommand):
                     if field in ('Results_ID', 'Result_group'):
                         continue
                     
-                    parsed_value, ok = parse_django_field_value(Results, field, value)
+                    if field in Results.BOOL_CHOICE_FIELDS:
+                        parsed_value = format_bool_charfield(parse_bool(parsed_value))
+                    else:
+                        parsed_value, ok = parse_django_field_value(Results, field, value)
 
                     if field == 'Point_estimate':
                         result.Point_estimate_original = value
@@ -119,8 +127,6 @@ class Command(BaseCommand):
                         logger.error("Results row %d: can't parse value '%s' for field %s" % (n, value, field))
                         errors += "Couldn't parse value '%s' for field %s\n" % (value, field)
 
-                    if field in Results.BOOL_CHOICE_FIELDS:
-                        parsed_value = format_bool_charfield(parse_bool(parsed_value))
                     setattr(result, field, parsed_value)
                 studies = list(Studies.objects.filter(Unique_identifier=row['Results_ID']))
 
