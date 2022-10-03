@@ -210,8 +210,28 @@ class Results(models.Model):
             return "%0.2f%%" % self.Point_estimate
         elif self.Numerator is not None and self.Denominator is not None:
             return "%d/%d" % (self.Numerator, self.Denominator)
+        elif self.Numerator is None and self.Denominator is None and self.Point_estimate is None:
+            return self.Point_estimate_original
         else:
             return 'Unknown'
+
+    def get_flags(self):
+        # return array of flags for displaying in 2 columns
+        flags = []
+        prev = None
+        for bool_field in self.BOOL_CHOICE_FIELDS:
+            field = self._meta.get_field(bool_field)
+            if prev is None:
+                prev = {
+                    'field': field,
+                    'value': getattr(self, bool_field),
+                }
+                flags.append(prev)
+            else:
+                prev['field2'] = field
+                prev['value2'] = getattr(self, bool_field)
+                prev = None
+        return flags
 
     @admin.display(ordering='Age_general', description='Age Bracket')
     def get_age(self):

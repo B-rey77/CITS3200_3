@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'admin_action_buttons',
+
     'database',
     'database.admin_apps.MyAdminConfig', # put admin site last so that our templates override the default admin site ones - FVP
 ]
@@ -65,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "admin_action_buttons.context_processors.admin_action_buttons",
             ],
         },
     },
