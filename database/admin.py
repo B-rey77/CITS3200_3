@@ -9,12 +9,14 @@ from django.urls import reverse
 from admin_action_buttons.admin import ActionButtonsMixin
 
 from database.models import Users, Studies, Results # Custom admin form imported from models.py
+from .actions import download_as_csv
 
 # The Custom Admin user model
 class AccountAdmin(ActionButtonsMixin, UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'date_joined', 'is_superuser')
     search_fields = ['email']
     readonly_fields = ('id', 'date_joined')
+    actions = [download_as_csv('Export selected accounts to CSV')]
     
     ordering = ['email']
     
@@ -57,6 +59,7 @@ class StudiesAdmin(ViewModelAdmin):
     list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
     ordering = ('Paper_title', 'Study_group')
     search_fields = ('Paper_title', 'Study_description')
+    actions = [download_as_csv('Export selected Studies to CSV')]
     search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
 
     @admin.display(ordering='Publication_year', description='Study Info')
@@ -92,6 +95,8 @@ class StudiesAdmin(ViewModelAdmin):
     @admin.display(ordering='Age_general', description='Age Bracket')
     def get_age_html(self, obj):
         return get_age_html(obj)
+
+
 
 class ResultsAdmin(ViewModelAdmin):
     @admin.display(ordering='Study__Paper_title', description='Study')
@@ -153,6 +158,7 @@ class ResultsAdmin(ViewModelAdmin):
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
     ordering = ('-Study__Study_group', )    
+    actions = [download_as_csv('Export selected results to CSV')]
 
     search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction')
     search_help_text = 'Search Study Titles, Measure, Location or Jurisdiction for matching keywords. Put quotes around search terms to find exact phrases only.'
