@@ -41,7 +41,7 @@
 {% block main %}
 	<div class="container form_container">
 		<div class="d-flex justify-content-center h-100">
-			<div class="user_card">
+			<div class="user_card card">
 				<div class="d-flex justify-content-center">
 					<h5 id="form-title">
 						REGISTER ACCOUNT
@@ -51,17 +51,11 @@
 					<form method="POST" action="" id="form">
 						{% csrf_token %}
 						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label for="inputUsername">
-									Username
-								</label>
-								<input type="username" name="username" class="form-control" id="inputUsername" placeholder="Username">
-							</div>
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-12">
 								<label for="inputEmail">
 									Email
 								</label>
-								<input type="email" name="email" class="form-control" id="inputEmail" placeholder="Email">
+								<input type="email" name="email" class="form-control" id="inputEmail" placeholder="Enter Email...">
 							</div>
 						</div>
 
@@ -70,13 +64,13 @@
 								<label for="inputFirstName">
 									First Name
 								</label>
-								<input type="first_name" name="first_name" class="form-control" id="inputFirstName" placeholder="First Name">
+								<input type="first_name" name="first_name" class="form-control" id="inputFirstName" placeholder="Enter First Name...">
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputLastName">
 									Last Name
 								</label>
-								<input type="last_name" name="last_name" class="form-control" id="inputLastName" placeholder="Last Name">
+								<input type="last_name" name="last_name" class="form-control" id="inputLastName" placeholder="Enter Last Name...">
 							</div>
 						</div>
 
@@ -85,19 +79,19 @@
 								<label for="inputProfession">
 									Profession
 								</label>
-								<input type="text" name="profession" class="form-control" id="inputProfession" placeholder="Profession">
+								<input type="text" name="profession" class="form-control" id="inputProfession" placeholder="Enter Profession...">
 							</div>
 							<div class="form-group col-md-3">
 								<label for="inputInstitution">
 									Institution
 								</label>
-								<input type="text" name="institution" class="form-control" id="inputInstitution" placeholder="Institution">
+								<input type="text" name="institution" class="form-control" id="inputInstitution" placeholder="Enter Institution...">
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputCountry">
 									Country
 								</label>
-								<input type="text" name="country" class="form-control" id="inputCountry" placeholder="Country">
+								<input type="text" name="country" class="form-control" id="inputCountry" placeholder="Enter Country...">
 							</div>
 						</div>
 
@@ -106,13 +100,13 @@
 								<label for="inputPassword">
 									Password
 								</label>
-								<input type="password" name="password1" class="form-control" id="inputPassword1" placeholder="Password">
+								<input type="password" name="password1" class="form-control" id="inputPassword1" placeholder="Enter Password...">
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputPassword">
 									Repeat password
 								</label>
-								<input type="password" name="password2" class="form-control" id="inputPassword2" placeholder="Repeat Password">
+								<input type="password" name="password2" class="form-control" id="inputPassword2" placeholder="Repeat Password...">
 							</div>
 						</div>
 

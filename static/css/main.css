@@ -1,8 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+/* Fonts used in ASAVI branding */
+@font-face {
+    font-family: "CaviarDreamsBold";
+    src: url(../fonts/caviar-dreams/CaviarDreams_Bold.ttf) format("truetype"),
+         url(../fonts/caviar-dreams/CaviarDreams_Bold-webfont.woff) format("woff");
+}
+
+/* Variable definitions for ASAVI branding */
+:root {
+    --dark-cyan: #005F83;
+    --cyan: #007FA3;
+    --brown: #963821;
+    --burgundy: #9E2A2B;
+    --dark-orange: #CB6015;
+    --orange: #ED8B00;
+    --light-orange: #F1B434;
+    --yellow: #FED141;
+    --cool-grey: #75787B;
+}
 
 /* Main: body styling across all pages */
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    /* background-color: var(--cyan);  */
+    background-image: linear-gradient(var(--cyan), var(--dark-cyan));
+        
+}
+
+/* Homepage */
+.home-left {
+    grid-column: 1;
+    padding-top: 100px;
+}
+
+.home-left h1{ 
+    font-family: "CaviarDreamsBold";
+    font-size: 70px;
+    color: #FFFFFF;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+} 
+
+.home-left h3{ 
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    color: #FFFFFF;
+} 
+
+.home-right {
+    grid-column: 2;
+}
+
+.home-right img {  
+    width: 600px;  
+}
+
+.container {
+    display: grid;
+}
+
+/* Button */
+.btn-primary {
+    background-color: var(--brown);
+    border-color: var(--brown);
+    color: var(--light-orange);
+    border-radius: 20px;
+    padding: 7px 22px;
+}
+
+.btn-primary:hover {
+    background-color: var(--light-orange);
+    border-color: var(--light-orange);
+    color: var(--brown);
 }
 
 /* Main: styling of the icons used across all pages */

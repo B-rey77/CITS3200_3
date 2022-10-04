@@ -11,3 +11,19 @@ nav ul > li {
     color: #212529;
     text-align: left;
 }
+
+.md-red {
+    color: #dc3545;
+}
+
+.md-green {
+    color: #198754;
+}
+
+.md-grey {
+    color: #6c757d;
+}
+
+a.deletelink {
+    box-sizing: content-box;
+}
