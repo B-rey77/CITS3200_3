@@ -3,6 +3,30 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
+BOOL_CHOICE = (
+        ('Y', 'Yes'),
+        ('N', 'No'),
+        ('?', 'N/A'),
+) 
+
+AGE_GROUPS = (
+        ('ALL', 'All'),
+        ('AD', 'Adults'),
+        ('C', 'Children'),
+        ('AL', 'Adolescents'),
+        ('EA', 'Elderly Adults'),
+        ('I', 'Infant'),
+        ('M', 'Mix'),
+)
+
+STUDY_GROUPS = (
+        ('SST', 'Superficial skin and throat'),
+        ('IG', 'Invasive GAS'),
+        ('ARF', 'ARF'),
+        ('ASPGN', 'APSGN'),                   
+)
+
+
 # Create your models here.
 
 class CustomAccountManager(BaseUserManager):
@@ -83,16 +107,9 @@ class Studies(models.Model):
         verbose_name_plural = 'Studies'
 
     Unique_identifier = models.CharField(max_length=20, verbose_name='Unique Identifier')    
-    STUDY_GROUPS = (
-        ('SST', 'Superficial skin and throat'),
-        ('IG', 'Invasive GAS'),
-        ('ARF', 'ARF'),
-        ('ASPGN', 'APSGN'),                   
-    )
     Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group')
     Paper_title = models.CharField(max_length=200, verbose_name='Paper Title')
     Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download')
-
     Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year')
 
     Disease = models.CharField(max_length=60, blank=True)
@@ -116,7 +133,7 @@ class Studies(models.Model):
     Case_findings = models.CharField(max_length=200, blank=True, default='')
     Case_findings_other = models.CharField(max_length=200, blank=True, default='')
     Data_source = models.CharField(max_length=200, blank=True, default='')
-    Case_cap_meth = models.CharField(max_length=200, blank=True, default='')
+    Case_cap_meth = models.CharField(max_length=200, blank=True, default='', verbose_name='Case Capture Method')
     Case_cap_meth_other = models.CharField(max_length=200, blank=True, default='')
     Coverage = models.CharField(max_length=200, blank=True, default='')
     Jurisdiction = models.CharField(max_length=200, blank=True, default='')
@@ -126,24 +143,13 @@ class Studies(models.Model):
     Population_group_strata = models.CharField(max_length=200, blank=True, default='')
     Population_denom = models.CharField(max_length=200, blank=True, default='')
     Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category (Original)')
-
-    AGE_GROUPS = (
-        ('ALL', 'All'),
-        ('AD', 'Adults'),
-        ('C', 'Children'),
-        ('AL', 'Adolescents'),
-        ('EA', 'Elderly Adults'),
-    )
     Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category')
-
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
-
     Burden_measure = models.CharField(max_length=200, blank=True)
-
-    Ses_reported = models.BooleanField(null=True, blank=True)
-    Mortality_data = models.BooleanField(null=True, blank=True)
-    Method_limitations = models.BooleanField(null=True, blank=True)    
+    Ses_reported = models.CharField(max_length=1, choices=BOOL_CHOICE,blank=True)
+    Mortality_data = models.CharField(max_length=1, choices=BOOL_CHOICE,blank=True)
+    Method_limitations = models.CharField(max_length=1, choices=BOOL_CHOICE,blank=True)    
 
     Limitations_identified = models.CharField(max_length=200, blank=True)
     Other_points = models.CharField(max_length=200, blank=True)
@@ -157,19 +163,9 @@ class Results(models.Model):
         verbose_name_plural = 'Results'
 
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
-    AGE_GROUPS = (
-        ('ALL', 'All ages'),
-        ('AD', 'Adult'),
-        ('C', 'Children'),
-        ('AL', 'Adolescents'),
-        ('I', 'Infant'),
-        ('M', 'Mix'),
-    )
     Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category')
-
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum Age (years)')
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
-
     Age_original = models.CharField(max_length=50, blank=True, verbose_name='Age Category (Original)')
     Population_gender = models.CharField(max_length=30, blank=True)
     Indigenous_status = models.CharField(max_length=20, blank=True, default='')
@@ -177,24 +173,13 @@ class Results(models.Model):
     Country = models.CharField(max_length=30, blank=True, default='')
     Jurisdiction = models.CharField(max_length=30, blank=True, default='')
     Specific_location = models.CharField(max_length=100, blank=True, default='')
-
     Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
     Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
-
     Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
-
     Numerator = models.PositiveIntegerField(null=True, blank=True)
     Denominator = models.PositiveIntegerField(null=True, blank=True)  
-
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
-
-    Measure = models.TextField(blank=True, default='')
-
-    BOOL_CHOICE = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-        ('?', 'N/A'),
-    )    
+    Measure = models.TextField(blank=True, default='') 
     Interpolated_from_graph = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
     Age_standardisation	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
     Dataset_name = 	models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
