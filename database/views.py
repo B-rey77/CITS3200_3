@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from email.policy import default
 from django.core.mail import EmailMessage
 from multiprocessing import context
-from readline import get_current_history_length
+
 from tkinter import Entry
 from django.contrib import messages #import for login messages
 
