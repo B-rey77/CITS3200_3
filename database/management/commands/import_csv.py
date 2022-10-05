@@ -115,7 +115,7 @@ class Command(BaseCommand):
                         continue
                     
                     if field in Results.BOOL_CHOICE_FIELDS:
-                        parsed_value = format_bool_charfield(parse_bool(parsed_value))
+                        parsed_value = format_bool_charfield(parse_bool(value))
                     else:
                         parsed_value, ok = parse_django_field_value(Results, field, value)
 
