@@ -18,9 +18,9 @@ class StrepAAdminSite(admin.AdminSite):
 		registered in this site.
 		"""
 		ordering = {
-			"Users": 1,
-			"Studies": 2,
-			"Results": 3
+			"Users": '0',
+			"Studies (Any Group)": '1',
+			"Results (Any Group)": '2'
 		}
 		app_dict = self._build_app_dict(request)
 		
@@ -29,7 +29,7 @@ class StrepAAdminSite(admin.AdminSite):
 
 		# Sort the models alphabetically within each app.
 		for app in app_list:
-			app['models'].sort(key=lambda x: ordering[x['name']])
+			app['models'].sort(key=lambda x: ordering.get(x['name'], x['name']))
 
 		return app_list
 

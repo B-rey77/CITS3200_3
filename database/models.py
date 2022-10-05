@@ -72,8 +72,8 @@ class Users(AbstractBaseUser):
      
 class Studies(models.Model):
     class Meta:
-        verbose_name = 'Study'
-        verbose_name_plural = 'Studies'
+        verbose_name = 'Study (Any Group)'
+        verbose_name_plural = 'Studies (Any Group)'
 
     Unique_identifier = models.CharField(max_length=20, null=True, blank=True, verbose_name='Unique Identifier', help_text='Internal use only')    
     STUDY_GROUPS = (
@@ -156,7 +156,8 @@ class Studies(models.Model):
 # LH: Rough draft for Results model. Needs further work with cleaner database. Some fields may be redundant upon cleanup.  
 class Results(models.Model):
     class Meta:
-        verbose_name_plural = 'Results'
+        verbose_name = 'Result (Any Group)'
+        verbose_name_plural = 'Results (Any Group)'
 
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE, null=True, blank=True)
     AGE_GROUPS = (
@@ -245,3 +246,46 @@ class Results(models.Model):
         if not self.Study:
             return "Burden: %s" % (self.get_burden(), )
         return '%s (Burden: %s)' % (self.Study.Paper_title, self.get_burden())
+
+class ProxyManager(models.Manager):
+    filter_args = None
+    def __init__(self, filter_args=None):
+        self.filter_args = filter_args or {}
+        super().__init__()
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(**self.filter_args)
+
+proxies = []
+def proxy_model_factory(model, verbose_name, **filter_args):
+    global proxies
+    name = '_'.join('%s.%s' % (k.replace('_', ''), v) for k, v in filter_args.items()) + '_' + model._meta.model_name
+
+    meta = type('Meta', (), {
+        'proxy': True,
+        'verbose_name': verbose_name,
+        'verbose_name_plural': verbose_name,
+    })
+
+    cls = type(name, (model, ), {
+        '__module__': __name__,
+        'Meta': meta,
+        'objects': ProxyManager(filter_args=filter_args),
+    })
+
+    proxies.append(cls)
+
+    return cls
+
+ARFResults = proxy_model_factory(Results, 'ARF Results', Study__Study_group='ARF')
+ARFStudies = proxy_model_factory(Studies, 'ARF Studies', Study_group='ARF')
+
+ASPGNResults = proxy_model_factory(Results, 'ASPGN Results', Study__Study_group='ASPGN')
+ASPGNStudies = proxy_model_factory(Studies, 'ASPGN Studies', Study_group='ASPGN')
+
+IGResults = proxy_model_factory(Results, 'Invasive GAS Results', Study__Study_group='IG')
+IGStudies = proxy_model_factory(Studies, 'Invasive GAS Studies', Study_group='IG')
+
+SSTResults = proxy_model_factory(Results, 'Superficial Skin & Throat Results', Study__Study_group='SST')
+SSTStudies = proxy_model_factory(Studies, 'Superficial Skin & Throat Studies', Study_group='SST')
+
