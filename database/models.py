@@ -241,26 +241,6 @@ class Results(models.Model):
                 prev = None
         return flags
 
-    @admin.display(ordering='Age_general', description='Age Bracket')
-    def get_age(self):
-        if self.Age_min is not None:
-            if self.Age_max is not None:
-                res = '%d to %d years old' % (self.Age_min, self.Age_max)
-            else:
-                res = '%d years and older' % self.Age_min
-        elif self.Age_max is not None:
-            res = 'Up to %d years old' % self.Age_max
-        else:
-            res = None
-        
-        if self.Age_general:
-            if res:
-                return '%s (%s)' % (self.Age_general, res)
-            else:
-                return self.Age_general
-        else:
-            return res or 'Any'
-
     def __str__(self):
         if not self.Study:
             return "Burden: %s" % (self.get_burden(), )
