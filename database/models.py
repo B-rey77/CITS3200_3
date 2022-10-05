@@ -147,7 +147,9 @@ class Studies(models.Model):
 
     def get_flags(self):
         return (
-            {'field': field, 'value': getattr(self, field.name)} for field in self._meta.get_fields() if isinstance(field, models.BooleanField)
+            {'field': field, 'value': getattr(self, field.name)}
+            for field in self._meta.get_fields()
+            #if isinstance(field, models.BooleanField) and getattr(self, field.name) is not None
         )
 
     def __str__(self):
@@ -230,16 +232,14 @@ class Results(models.Model):
         prev = None
         for bool_field in self.BOOL_CHOICE_FIELDS:
             field = self._meta.get_field(bool_field)
-            if prev is None:
-                prev = {
-                    'field': field,
-                    'value': getattr(self, bool_field),
-                }
-                flags.append(prev)
-            else:
-                prev['field2'] = field
-                prev['value2'] = getattr(self, bool_field)
-                prev = None
+            value = getattr(self, bool_field)
+            if not (value == 'Y' or value == 'N'):
+                continue
+
+            flags.append({
+                'field': field,
+                'value': value,
+            })
         return flags
 
     def __str__(self):
@@ -289,3 +289,5 @@ IGStudies = proxy_model_factory(Studies, 'Invasive GAS Studies', Study_group='IG
 SSTResults = proxy_model_factory(Results, 'Superficial Skin & Throat Results', Study__Study_group='SST')
 SSTStudies = proxy_model_factory(Studies, 'Superficial Skin & Throat Studies', Study_group='SST')
 
+# one way to possibly add admin page approval function
+#UnapprovedResults = proxy_model_factory(Results, 'Results (Pending Approval)', Is_approved=False)
