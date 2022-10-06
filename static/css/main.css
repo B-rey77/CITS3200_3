@@ -18,42 +18,51 @@
     --cool-grey: #75787B;
 }
 
-/* Main: body styling across all pages */
+/* MAIN: body styling across all pages */
 body {
     font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-    /* background-color: var(--cyan);  */
+    background-color: var(--cyan); 
     background-image: linear-gradient(var(--cyan), var(--dark-cyan));
         
 }
 
-/* Homepage */
-.home-left {
-    grid-column: 1;
-    padding-top: 100px;
-}
-
-.home-left h1{ 
+h1 { 
     font-family: "CaviarDreamsBold";
     font-size: 70px;
     color: #FFFFFF;
     text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
 } 
 
-.home-left h3{ 
+h2 {
+    font-family: "CaviarDreamsBold";
+    font-size: 30px;
+    color: var(--burgundy);
+}
+
+h3 { 
     font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
     color: #FFFFFF;
 } 
 
-.home-right {
-    grid-column: 2;
+p {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    color: #FFFFFF;
 }
 
-.home-right img {  
-    width: 600px;  
+a {
+    color: var(--brown);
 }
 
-.container {
-    display: grid;
+a:hover {
+    color: var(--light-orange);
+}
+
+.gradient-border {
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, var(--dark-orange), var(--light-orange)) border-box;
+    border: 6px solid transparent;
+    border-radius: 50px;
+    padding: 10px 20px;
 }
 
 /* Button */
@@ -71,8 +80,83 @@ body {
     color: var(--brown);
 }
 
-/* Main: styling of the icons used across all pages */
 .gogl-icon {
     font-size: 125px; 
     vertical-align: middle;
+}
+
+  /* HOME PAGE */
+.home-left {
+    grid-column: 1;
+    padding-top: 60px;
+}
+
+.home-right {
+    grid-column: 2;
+}
+
+.home-right img {  
+    width: 600px;  
+}
+
+/* LOGIN PAGE */
+.container {
+    display: grid;
+}
+
+.login_card {
+    width: 450px;
+    height: 430px;
+}
+
+.user_card {
+    margin-top: auto;
+    margin-bottom: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 70px;
+}
+
+.form-control {
+    border-radius: 17px;
+}
+
+.full_width {
+    width: 100%;
+}
+
+.form_container {
+    margin-top: 130px;
+    margin-bottom: 150px;
+}
+
+.input-group-text {
+    background: var(--burgundy);
+    color: #FFFFFF;
+    border: 0;
+}
+
+#login-icon {
+    border-top-left-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+.justify-content-center > h2 {
+    padding-bottom: 25px;
+}
+
+/* NAVBAR */
+.navbar {
+    border-bottom: 5px solid var(--brown);
+}
+
+/* FOOTER */
+footer {
+    border-top: 5px solid var(--brown);
 }

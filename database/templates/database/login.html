@@ -5,48 +5,8 @@
 {% endblock %}
 
 {% block style %}
-	.form_container {
-		margin-top: 80px;
-		margin-bottom: 150px;
-	}
-
-	.user_card {
-		width: 350px;
-		margin-top: auto;
-		margin-bottom: auto;
-		position: relative;
-		display: flex;
-		justify-content: center;
-		flex-direction: column;
-		padding: 10px;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-		-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-		-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-		border-radius: 5px;
-	}
-
-	.login_btn {
-		width: 100%;
-		background: #33ccff !important;
-		color: white !important;
-	}
-	.login_btn:focus {
-		box-shadow: none !important;
-		outline: 0px !important;
-	}
-
-	.login_container {
-		padding: 0 2rem;
-	}
-
-	.input-group-text {
-		background: #f7ba5b !important;
-		color: black !important;
-		border: 0 !important;
-		border-radius: 0.25rem 0 0 0.25rem !important;
-	}
 	
-	#messages{
+	# messages{
 		color: rgb(227, 44, 44);
 		padding: 10px;
 		margin-top: 10px;
@@ -55,32 +15,33 @@
 {% endblock %}
 		
 {% block main %}
-	<div class="container form_container">
-		<div class="d-flex justify-content-center h-100">
-			<div class="user_card card">
+	
+	<div class="form_container">
+		<div class="d-flex justify-content-center">
+			<div class="user_card card gradient-border login_card">
 				<div class="d-flex justify-content-center">
-					<h5 id="form-title">
-						LOGIN
-					</h5>
+					<h2>
+						Login
+					</h2>
 				</div>
 				<div class="container">
 					<form method="POST" action="">
 						{% csrf_token %}
 						<div class="input-group mb-3">
 							<div class="input-group-append">
-								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								<span id="login-icon" class="input-group-text"><i class="fas fa-user"></i></span>
 							</div>
-							<input type="text" name="email" placeholder="Email..." class="form-control">
+							<input type="text" name="email" placeholder="Email" class="form-control">
 						</div>
 						<div class="input-group mb-2">
 							<div class="input-group-append">
-								<span class="input-group-text"><i class="fas fa-key"></i></span>
+								<span id="login-icon" class="input-group-text"><i class="fas fa-key"></i></span>
 							</div>
-								<input type="password" name="password" placeholder="Password..." class="form-control" >
+								<input type="password" name="password" placeholder="Password" class="form-control" >
 						</div>
 
 							<div class="d-flex justify-content-center mt-3 login_container">
-				 				<input class="btn login_btn" type="submit" value="Login">
+				 				<input class="btn btn-primary full_width" type="submit" value="SIGN IN">
 				   			</div>
 					</form>
 
