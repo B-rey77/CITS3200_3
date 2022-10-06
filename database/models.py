@@ -96,8 +96,8 @@ class Users(AbstractBaseUser):
      
 class Studies(models.Model):
     class Meta:
-        verbose_name = 'Study'
-        verbose_name_plural = 'Studies'
+        verbose_name = 'Study (Any Group)'
+        verbose_name_plural = 'Studies (Any Group)'
 
     Unique_identifier = models.CharField(max_length=20, null=True, blank=True, verbose_name='Unique Identifier', help_text='Internal use only')    
     STUDY_GROUPS = (
@@ -169,7 +169,9 @@ class Studies(models.Model):
 
     def get_flags(self):
         return (
-            {'field': field, 'value': getattr(self, field.name)} for field in self._meta.get_fields() if isinstance(field, models.BooleanField)
+            {'field': field, 'value': getattr(self, field.name)}
+            for field in self._meta.get_fields()
+            if isinstance(field, models.BooleanField) #and getattr(self, field.name) is not None
         )
 
     def __str__(self):
@@ -178,7 +180,8 @@ class Studies(models.Model):
 # LH: Rough draft for Results model. Needs further work with cleaner database. Some fields may be redundant upon cleanup.  
 class Results(models.Model):
     class Meta:
-        verbose_name_plural = 'Results'
+        verbose_name = 'Result (Any Group)'
+        verbose_name_plural = 'Results (Any Group)'
 
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
     Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category')
@@ -229,39 +232,62 @@ class Results(models.Model):
         prev = None
         for bool_field in self.BOOL_CHOICE_FIELDS:
             field = self._meta.get_field(bool_field)
-            if prev is None:
-                prev = {
-                    'field': field,
-                    'value': getattr(self, bool_field),
-                }
-                flags.append(prev)
-            else:
-                prev['field2'] = field
-                prev['value2'] = getattr(self, bool_field)
-                prev = None
-        return flags
+            value = getattr(self, bool_field)
+            if not (value == 'Y' or value == 'N'):
+                continue
 
-    @admin.display(ordering='Age_general', description='Age Bracket')
-    def get_age(self):
-        if self.Age_min is not None:
-            if self.Age_max is not None:
-                res = '%d to %d years old' % (self.Age_min, self.Age_max)
-            else:
-                res = '%d years and older' % self.Age_min
-        elif self.Age_max is not None:
-            res = 'Up to %d years old' % self.Age_max
-        else:
-            res = None
-        
-        if self.Age_general:
-            if res:
-                return '%s (%s)' % (self.Age_general, res)
-            else:
-                return self.Age_general
-        else:
-            return res or 'Any'
+            flags.append({
+                'field': field,
+                'value': value,
+            })
+        return flags
 
     def __str__(self):
         if not self.Study:
             return "Burden: %s" % (self.get_burden(), )
         return '%s (Burden: %s)' % (self.Study.Paper_title, self.get_burden())
+
+class ProxyManager(models.Manager):
+    filter_args = None
+    def __init__(self, filter_args=None):
+        self.filter_args = filter_args or {}
+        super().__init__()
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(**self.filter_args)
+
+proxies = []
+def proxy_model_factory(model, verbose_name, **filter_args):
+    global proxies
+    name = '_'.join('%s.%s' % (k.replace('_', ''), v) for k, v in filter_args.items()) + '_' + model._meta.model_name
+
+    meta = type('Meta', (), {
+        'proxy': True,
+        'verbose_name': verbose_name,
+        'verbose_name_plural': verbose_name,
+    })
+
+    cls = type(name, (model, ), {
+        '__module__': __name__,
+        'Meta': meta,
+        'objects': ProxyManager(filter_args=filter_args),
+    })
+
+    proxies.append(cls)
+
+    return cls
+
+ARFResults = proxy_model_factory(Results, 'ARF Results', Study__Study_group='ARF')
+ARFStudies = proxy_model_factory(Studies, 'ARF Studies', Study_group='ARF')
+
+ASPGNResults = proxy_model_factory(Results, 'ASPGN Results', Study__Study_group='ASPGN')
+ASPGNStudies = proxy_model_factory(Studies, 'ASPGN Studies', Study_group='ASPGN')
+
+IGResults = proxy_model_factory(Results, 'Invasive GAS Results', Study__Study_group='IG')
+IGStudies = proxy_model_factory(Studies, 'Invasive GAS Studies', Study_group='IG')
+
+SSTResults = proxy_model_factory(Results, 'Superficial Skin & Throat Results', Study__Study_group='SST')
+SSTStudies = proxy_model_factory(Studies, 'Superficial Skin & Throat Studies', Study_group='SST')
+
+# one way to possibly add admin page approval function
+#UnapprovedResults = proxy_model_factory(Results, 'Results (Pending Approval)', Is_approved=False)
