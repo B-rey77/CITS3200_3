@@ -28,6 +28,9 @@ class AccountAdmin(ActionButtonsMixin, UserAdmin):
 class ViewModelAdmin(ActionButtonsMixin, ModelAdmin):
     def has_view_permission(self, request, obj=None):
         return request.user.is_active #and request.user.can_view_data
+    
+    def has_add_permission(self, request, obj=None):
+        return request.user.is_active #and request.user.can_add_data
 
 def get_age_html(obj):
     if obj.Age_min is not None and obj.Age_min > 0:
@@ -52,8 +55,16 @@ def get_age_html(obj):
             return format_html('<b>{}</b>', age_general)
     else:
         return res or 'Any'
+
+class ResultsInline(admin.StackedInline):
+    model = Results
+    extra = 1
     
+    def has_add_permission(self, request, obj=None):
+        return request.user.is_active #and request.user.can_add_data
+        
 class StudiesAdmin(ViewModelAdmin):
+    inlines = [ResultsInline]
     list_display = ('Paper_title', 'get_info_html', 'get_location_html', 'get_population_html', 'get_age_html',
         'get_case_html', 'Burden_measure', 'Notes', 'get_flags_html')
     list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
