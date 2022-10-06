@@ -40,7 +40,6 @@ INSTALLED_APPS = [
 
     'database',
     'database.admin_apps.MyAdminConfig', # put admin site last so that our templates override the default admin site ones - FVP
-    'django_admin_listfilter_dropdown',
 ]
 
 MIDDLEWARE = [
@@ -142,7 +141,7 @@ AUTH_USER_MODEL = 'database.Users'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_FROM =  'group3.22919874@gmail.com'
-EMAIL_HOST_USER = 'group3.22919874@gmail.com'
+EMAIL_HOST_USER = 'group3.l.i.harfouch@gmail.com'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
