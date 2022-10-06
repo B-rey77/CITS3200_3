@@ -108,7 +108,7 @@ def loginPage(request, *args, **kwargs):
 			
 			if user is not None:
 				login(request, user)                
-				return redirect('visitor')
+				return redirect('admin:database_studies_changelist')
 			else:
 				messages.info(request, 'Email OR Password is incorrect')
 			

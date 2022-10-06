@@ -10,6 +10,7 @@ from admin_action_buttons.admin import ActionButtonsMixin
 
 from database.models import Users, Studies, Results, proxies # Custom admin form imported from models.py
 from .actions import download_as_csv
+from django_admin_listfilter_dropdown.filters import (DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter)
 
 # The Custom Admin user model
 class AccountAdmin(ActionButtonsMixin, UserAdmin):
@@ -67,7 +68,11 @@ class StudiesAdmin(ViewModelAdmin):
     inlines = [ResultsInline]
     list_display = ('Paper_title', 'get_info_html', 'get_location_html', 'get_population_html', 'get_age_html',
         'get_case_html', 'Burden_measure', 'Notes', 'get_flags_html')
-    list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
+    list_filter = (
+        ('Study_design', ChoiceDropdownFilter), 
+        ('Study_group',ChoiceDropdownFilter), 
+        ('Age_general',ChoiceDropdownFilter), 
+        'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
     ordering = ('Paper_title', 'Study_group')
     search_fields = ('Paper_title', 'Study_description')
     actions = [download_as_csv('Export selected Studies to CSV')]
@@ -165,7 +170,11 @@ class ResultsAdmin(ViewModelAdmin):
     list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age_html',
         'get_population_html', 'get_location_html', 'get_study', 'Notes', 'get_flags_html', )
 
-    list_filter = ('Study__Study_group', 'Age_general', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
+    list_filter = (
+        ('Study__Study_group',ChoiceDropdownFilter), 
+        ('Age_general',ChoiceDropdownFilter), 
+        ('Interpolated_from_graph',ChoiceDropdownFilter), 
+        'Age_standardisation', 'Dataset_name',
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
     ordering = ('-Study__Study_group', )    
