@@ -149,7 +149,7 @@ class Studies(models.Model):
         return (
             {'field': field, 'value': getattr(self, field.name)}
             for field in self._meta.get_fields()
-            #if isinstance(field, models.BooleanField) and getattr(self, field.name) is not None
+            if isinstance(field, models.BooleanField) #and getattr(self, field.name) is not None
         )
 
     def __str__(self):
