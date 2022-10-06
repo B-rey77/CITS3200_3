@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from admin_action_buttons.admin import ActionButtonsMixin
 
-from database.models import Users, Studies, Results # Custom admin form imported from models.py
+from database.models import Users, Studies, Results, proxies # Custom admin form imported from models.py
 from .actions import download_as_csv
 
 # The Custom Admin user model
@@ -174,11 +174,33 @@ class ResultsAdmin(ViewModelAdmin):
     search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction')
     search_help_text = 'Search Study Titles, Measure, Location or Jurisdiction for matching keywords. Put quotes around search terms to find exact phrases only.'
 
-
-
 from database.admin_site import admin_site # Custom admin site
 
 admin_site.register(Users, AccountAdmin)
 admin_site.register(Studies, StudiesAdmin)
 admin_site.register(Results, ResultsAdmin)
 admin_site.unregister(Group)
+
+def get_proxy_admin(model, base_admin):
+    """ create generic admin pages for different results/study groups """
+    class AnythingProxyAdmin(base_admin):
+        list_display = [
+            x for x in base_admin.list_display if x not in {'get_study_group', 'Study_group'}
+        ]
+        list_filter = [
+            x for x in base_admin.list_filter if x not in {'Study__Study_group', 'Study_group'}
+        ]
+        
+        def has_add_permission(self, request):
+            # don't confuse users by letting them add "specific group" results/studies,
+            # since the proxy admin doesn't actually constrain which group the result belongs to.
+            return False
+
+    return AnythingProxyAdmin
+
+def register_proxy_admins():
+    for p in proxies:
+        model_admin = get_proxy_admin(p, ResultsAdmin if issubclass(p, Results) else StudiesAdmin)
+        admin_site.register(p, model_admin)
+
+register_proxy_admins()
