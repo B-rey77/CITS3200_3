@@ -50,6 +50,7 @@ h5 {
 }
 
 p {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
     color: var(--cool-grey);
     text-align: center;
     font-size: 15px;
@@ -217,4 +218,16 @@ a.icon-label {
 footer {
     border-top: 5px solid var(--brown);
     background-color: var(--brown);
+}
+
+footer * {
+    color: var(--dark-orange)
+}
+
+footer span {
+    padding: 5px;
+}
+
+#footer-btm {
+    background-color: var(--burgundy);
 }
