@@ -4,24 +4,29 @@
 CITS3200 Home 
 {% endblock %}
 
-{% block style %}
-	.form_container {
-		margin-top: 80px;
-		margin-bottom: 150px;
-	}
-{% endblock %}
-
 {% block main %}
 
 	<div class="container form_container">
 		<div class="home-left">
 			<h1>Strep A Online Database</h1>
-			<h3>Strep A is a bacteria that causes throat and skin infections, usually in kids aged five to 15.</h3>
-			<a class="m-auto" href="{% url 'login' %}">
+			<div class="home-text">
+				<h5>Strep A causes superficial infections of the skin and throat, invasive diseases and autoimmune diseases (ARF and APSGN).</h5>
+				<h5>This live data collection summarises data from peer-reviewed scientific publications of Strep A burden of disease studies conducted since 2000.</h5>
+				<h5>Strep A burden of disease data is searchable by manuscript author, title, disease type, calendar year, population group, study setting/location and a number of other broad methodological, clinical and demographic variables.<h5>
+			</div>
+				{% if user.is_authenticated %}
+			<a class="m-auto" href='/database'>
 				<button type="button" class="btn btn-primary">
-					Login here
+					View database
 				</button>
 			</a>
+			{% else %}
+			<a class="m-auto" href="{% url 'login' %}">
+				<button type="button" class="btn btn-primary">
+					Log in to view database
+				</button>
+			</a>
+			{% endif %}
 		</div>
 		<div class="home-right">
 			<img src="static/img/v_asavi.png">
