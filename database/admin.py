@@ -8,8 +8,9 @@ from django.urls import reverse
 
 from admin_action_buttons.admin import ActionButtonsMixin
 
-from database.models import Users, Studies, Results # Custom admin form imported from models.py
+from database.models import Users, Studies, Results, proxies # Custom admin form imported from models.py
 from .actions import download_as_csv
+from django_admin_listfilter_dropdown.filters import (DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter)
 
 # The Custom Admin user model
 class AccountAdmin(ActionButtonsMixin, UserAdmin):
@@ -28,6 +29,9 @@ class AccountAdmin(ActionButtonsMixin, UserAdmin):
 class ViewModelAdmin(ActionButtonsMixin, ModelAdmin):
     def has_view_permission(self, request, obj=None):
         return request.user.is_active #and request.user.can_view_data
+    
+    def has_add_permission(self, request, obj=None):
+        return request.user.is_active #and request.user.can_add_data
 
 def get_age_html(obj):
     if obj.Age_min is not None and obj.Age_min > 0:
@@ -52,17 +56,29 @@ def get_age_html(obj):
             return format_html('<b>{}</b>', age_general)
     else:
         return res or 'Any'
+
+class ResultsInline(admin.StackedInline):
+    model = Results
+    extra = 1
     
+    def has_add_permission(self, request, obj=None):
+        return request.user.is_active #and request.user.can_add_data
+        
 class StudiesAdmin(ViewModelAdmin):
+    inlines = [ResultsInline]
     list_display = ('Paper_title', 'get_info_html', 'get_location_html', 'get_population_html', 'get_age_html',
         'get_case_html', 'Burden_measure', 'Notes', 'get_flags_html')
-    list_filter = ('Study_design', 'Study_group', 'Age_general', 'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
+    list_filter = (
+        ('Study_design', ChoiceDropdownFilter), 
+        ('Study_group',ChoiceDropdownFilter), 
+        ('Age_general',ChoiceDropdownFilter), 
+        'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
     ordering = ('Paper_title', 'Study_group')
     search_fields = ('Paper_title', 'Study_description')
     actions = [download_as_csv('Export selected Studies to CSV')]
     search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
 
-    @admin.display(ordering='Publication_year', description='Study Info')
+    @admin.display(ordering='Year', description='Study Info')
     def get_info_html(self, obj):
         return render_to_string('database/studies_info.html', context={'row': obj})
 
@@ -154,7 +170,11 @@ class ResultsAdmin(ViewModelAdmin):
     list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age_html',
         'get_population_html', 'get_location_html', 'get_study', 'Notes', 'get_flags_html', )
 
-    list_filter = ('Study__Study_group', 'Age_general', 'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name',
+    list_filter = (
+        ('Study__Study_group',ChoiceDropdownFilter), 
+        ('Age_general',ChoiceDropdownFilter), 
+        ('Interpolated_from_graph',ChoiceDropdownFilter), 
+        'Age_standardisation', 'Dataset_name',
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
     ordering = ('-Study__Study_group', )    
@@ -163,11 +183,33 @@ class ResultsAdmin(ViewModelAdmin):
     search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction')
     search_help_text = 'Search Study Titles, Measure, Location or Jurisdiction for matching keywords. Put quotes around search terms to find exact phrases only.'
 
-
-
 from database.admin_site import admin_site # Custom admin site
 
 admin_site.register(Users, AccountAdmin)
 admin_site.register(Studies, StudiesAdmin)
 admin_site.register(Results, ResultsAdmin)
 admin_site.unregister(Group)
+
+def get_proxy_admin(model, base_admin):
+    """ create generic admin pages for different results/study groups """
+    class AnythingProxyAdmin(base_admin):
+        list_display = [
+            x for x in base_admin.list_display if x not in {'get_study_group', 'Study_group'}
+        ]
+        list_filter = [
+            x for x in base_admin.list_filter if x not in {'Study__Study_group', 'Study_group'}
+        ]
+        
+        def has_add_permission(self, request):
+            # don't confuse users by letting them add "specific group" results/studies,
+            # since the proxy admin doesn't actually constrain which group the result belongs to.
+            return False
+
+    return AnythingProxyAdmin
+
+def register_proxy_admins():
+    for p in proxies:
+        model_admin = get_proxy_admin(p, ResultsAdmin if issubclass(p, Results) else StudiesAdmin)
+        admin_site.register(p, model_admin)
+
+register_proxy_admins()

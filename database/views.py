@@ -1,4 +1,3 @@
-from tkinter import Entry
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
@@ -10,11 +9,7 @@ from django.contrib import messages #import for login messages
 
 from django.contrib.auth.decorators import login_required
 
-from email.policy import default
 from django.core.mail import EmailMessage
-from multiprocessing import context
-from readline import get_current_history_length
-from tkinter import Entry
 from django.contrib import messages #import for login messages
 
 # Create your views here.
@@ -113,7 +108,7 @@ def loginPage(request, *args, **kwargs):
 			
 			if user is not None:
 				login(request, user)                
-				return redirect('visitor')
+				return redirect('admin:database_studies_changelist')
 			else:
 				messages.info(request, 'Email OR Password is incorrect')
 			
