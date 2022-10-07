@@ -107,9 +107,10 @@ class Studies(models.Model):
         ('ASPGN', 'APSGN'),                   
     )
     Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group')
-    Paper_title = models.CharField(max_length=200, verbose_name='Paper Title')
-    Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download')
-    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year')
+    Paper_title = models.CharField(max_length=200, verbose_name='Paper Title', help_text='Title of the published manuscript/report.')
+    Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download', help_text=
+    'URL or doi to facilitate access to the source manuscript/report, full access will depend on open/institutional access permissions set by each journal.')
+    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year', help_text='Year of publication of manuscript/report.')
 
     Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (

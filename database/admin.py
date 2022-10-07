@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.utils.html import format_html
 from django.template.loader import render_to_string
 from django.urls import reverse
-
+from rangefilter.filters import NumericRangeFilter
 from admin_action_buttons.admin import ActionButtonsMixin
 
 from database.models import Users, Studies, Results, proxies # Custom admin form imported from models.py
