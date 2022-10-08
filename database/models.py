@@ -12,12 +12,13 @@ BOOL_CHOICE = (
 
 AGE_GROUPS = (
         ('ALL', 'All'),
-        ('AD', 'Adults'),
+        ('AD', 'Adult'),
         ('C', 'Children'),
         ('AL', 'Adolescents'),
         ('EA', 'Elderly Adults'),
         ('I', 'Infant'),
         ('M', 'Mix'),
+        ('N/A', 'N/A')
 )
 
 STUDY_GROUPS = (
@@ -106,10 +107,14 @@ class Studies(models.Model):
         ('ARF', 'ARF'),
         ('ASPGN', 'APSGN'),                   
     )
-    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group')
+    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group',
+    help_text='Broad classification of the Strep A-associated disease type that the study was based on: (i) Superficial skin and/or throat infections, (ii) Invasive Strep A infections, (iii) Acute Rheumatic Fever (ARF), (iv) Acute Post Streptococcal Glomerulonephritis (APSGN).')
+   
     Paper_title = models.CharField(max_length=200, verbose_name='Paper Title', help_text='Title of the published manuscript/report.')
-    Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download', help_text=
-    'URL or doi to facilitate access to the source manuscript/report, full access will depend on open/institutional access permissions set by each journal.')
+    
+    Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download',
+    help_text='URL or doi to facilitate access to the source manuscript/report, full access will depend on open/institutional access permissions set by each journal.')
+    
     Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year', help_text='Year of publication of manuscript/report.')
 
     Disease = models.CharField(max_length=60, blank=True)
@@ -126,25 +131,39 @@ class Studies(models.Model):
         ('RA', 'Review article'),              
         ('O', 'Other'),        
     )
-    Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS)
-    Study_design_other = models.CharField(max_length=200, blank=True, default='')
-    Study_description = models.CharField(max_length=200, blank=True, default='')
+    Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS,
+    help_text='Study classification based on the temporality of data collection. Prospective (if study involves screening or active surveillance or primary data collection) or retrospective (study involves using either administrative/medical record data from hospitals, primary health centres, laboratory or population datasets) or both prospective and retrospective (if study has both components). Other categories which are rarely used include report and outbreak investigation.')
+    
+    Study_design_other = models.CharField(max_length=200, blank=True, default='', verbose_name='Study design (other)')
+    Study_description = models.CharField(max_length=200, blank=True, default='', help_text='Name of the first author, abbreviated name of journal and year of manuscript publication. Example: McDonald, Clin Infect Dis, 2006')
     Case_definition = models.CharField(max_length=200, blank=True, default='')
     Case_findings = models.CharField(max_length=200, blank=True, default='')
     Case_findings_other = models.CharField(max_length=200, blank=True, default='')
     Case_cap_meth = models.CharField(max_length=200, blank=True, default='')
     Case_cap_meth_other = models.CharField(max_length=200, blank=True, default='')
 
-    Data_source = models.CharField(max_length=200, blank=True, default='')
-    Coverage = models.CharField(max_length=200, blank=True, default='')
+    Data_source = models.CharField(max_length=200, blank=True, default='', verbose_name='Data source (if applicable', 
+    help_text='Name of the dataset, project, consortium or specific disease register. ')
+    
+    Coverage = models.CharField(max_length=200, blank=True, default='', verbose_name='Geographic Coverage', 
+    help_text='Level of geographic coverage in the study, categorised as (i) national/multli-jurisdictional, (ii) state, (iii) subnational/ regional, (iv) single institution/ service.  ')
 
-    Jurisdiction = models.CharField(max_length=200, blank=True, default='')
-    Specific_region = models.CharField(max_length=200, blank=True, default='')
-    Climate = models.CharField(max_length=200, blank=True, default='')
-    Aria_remote = models.CharField(max_length=200, blank=True, default='')
+    Jurisdiction = models.CharField(max_length=200, blank=True, default='', 
+    help_text='Jurisdictional location of the study, categorized by individual jurisdiction name (WA, NT, SA, QLD, NSW, Vic) or combination of jurisdictions (Combination – Northern Australia or Combination- others). ')
+    
+    Specific_region = models.CharField(max_length=200, blank=True, default='', verbose_name='Specific region (if applicable)', 
+    help_text='Specific region covered by the study, for example: city / town if the study involved a single institution / service; or number and location of remote communities included. ')
+    Climate = models.CharField(max_length=200, blank=True, default='',
+    help_text='Climatic conditions based on the geographic coverage of studies, for example: “Tropical” for studies conducted at the Top-End NT, “Temperate” for studies from Victoria or NSW. ')
+    
+    Aria_remote = models.CharField(max_length=200, blank=True, default='', verbose_name='Remoteness',
+    help_text='Classification into metropolitan, regional and remote areas based on the ARIA+ (Accessibility and Remoteness Index of Australia) system.')
 
-    Population_group_strata = models.CharField(max_length=200, blank=True, default='')
-    Population_denom = models.CharField(max_length=200, blank=True, default='')
+    Population_group_strata = models.CharField(max_length=200, blank=True, default='', 
+    help_text='Indicates whether burden estimates were presented stratified by population group or not i.e.) Yes – then Indigenous vs. non-Indigenous results are presented, No – general population burden estimates only with no stratification.')
+    
+    Population_denom = models.CharField(max_length=200, blank=True, default='', verbose_name='Population denominator',
+    help_text='The population used as the denominator by the study, for example: general population, Indigenous population, hospitalised patients.')
 
     AGE_GROUPS = (
         ('ALL', 'All'),
@@ -158,14 +177,22 @@ class Studies(models.Model):
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
     Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category (Original)')
 
-    Burden_measure = models.CharField(max_length=200, blank=True)
+    Burden_measure = models.CharField(max_length=200, blank=True,
+    help_text='The epidemiological measure presented as a point estimate by the study. The categories include: population incidence, population prevalence or proportion (not population based).')
 
-    Ses_reported = models.BooleanField(null=True, blank=True)
-    Mortality_data = models.BooleanField(null=True, blank=True)
-    Method_limitations = models.BooleanField(null=True, blank=True)
+    Ses_reported = models.BooleanField(null=True, blank=True, verbose_name='Socioeconomic status (SES) reported',
+    help_text='This variable indicates “Yes/No”, whether socioeconomic status is reported by the study.')
+
+    Mortality_data = models.BooleanField(null=True, blank=True, verbose_name='Mortality',
+    help_text='This variable indicates “Yes/No”, whether mortality estimates are reported by the study.')
+
+    Method_limitations = models.BooleanField(null=True, blank=True,
+    help_text='This variable briefly describes whether method limitations were specified by the authors of the publication.')
 
     Limitations_identified = models.CharField(max_length=200, blank=True)
-    Other_points = models.CharField(max_length=200, blank=True)
+    Other_points = models.CharField(max_length=200, blank=True,
+    help_text='This variable captures any other relevant notes relating to the study that may impact the interpretation of Strep A burden estimates.')
+    
     Notes = models.TextField(blank=True, default='')
 
     def get_flags(self):
