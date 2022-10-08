@@ -78,7 +78,7 @@ class StudiesAdmin(ViewModelAdmin):
     actions = [download_as_csv('Export selected Studies to CSV')]
     search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
 
-    @admin.display(ordering='Publication_year', description='Study Info')
+    @admin.display(ordering='Year', description='Study Info')
     def get_info_html(self, obj):
         return render_to_string('database/studies_info.html', context={'row': obj})
 
