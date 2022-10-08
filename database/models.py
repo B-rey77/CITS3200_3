@@ -100,7 +100,6 @@ class Studies(models.Model):
         verbose_name = 'Study (Any Group)'
         verbose_name_plural = 'Studies (Any Group)'
 
-    Unique_identifier = models.CharField(max_length=20, null=True, blank=True, verbose_name='Unique Identifier', help_text='Internal use only')    
     STUDY_GROUPS = (
         ('SST', 'Superficial skin and throat'),
         ('IG', 'Invasive GAS'),
@@ -109,14 +108,22 @@ class Studies(models.Model):
     )
     Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group',
     help_text='Broad classification of the Strep A-associated disease type that the study was based on: (i) Superficial skin and/or throat infections, (ii) Invasive Strep A infections, (iii) Acute Rheumatic Fever (ARF), (iv) Acute Post Streptococcal Glomerulonephritis (APSGN).')
-   
+    
+    Study_description = models.CharField(max_length=200, blank=True, default='', help_text='Name of the first author, abbreviated name of journal and year of manuscript publication. Example: McDonald, Clin Infect Dis, 2006')
+    
     Paper_title = models.CharField(max_length=200, verbose_name='Paper Title', help_text='Title of the published manuscript/report.')
     
     Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download',
     help_text='URL or doi to facilitate access to the source manuscript/report, full access will depend on open/institutional access permissions set by each journal.')
     
+    Unique_identifier = models.CharField(max_length=8, null=True, blank=True, verbose_name='Unique Identifier',
+    help_text='Links the methods dataset to the results dataset, which contains estimates reported by the same study (often multiple results per study). Each Unique Identifier consists of the year of publication followed by the first four letters of the first author. Example: 2006MCDO is a unique identifier for McDonald, Clin Infect Dis, 2006, which provides a link between the methods used by 2006MCDO to obtain the 21 estimates reported in that manuscript. ') 
+    
     Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year', help_text='Year of publication of manuscript/report.')
 
+    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group',
+    help_text='Broad classification of the Strep A-associated disease type that the study was based on: (i) Superficial skin and/or throat infections, (ii) Invasive Strep A infections, (iii) Acute Rheumatic Fever (ARF), (iv) Acute Post Streptococcal Glomerulonephritis (APSGN).')
+    
     Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (
         ('CS', 'Case series'),
@@ -134,13 +141,14 @@ class Studies(models.Model):
     Study_design = models.CharField(max_length=3, choices=STUDY_DESIGNS,
     help_text='Study classification based on the temporality of data collection. Prospective (if study involves screening or active surveillance or primary data collection) or retrospective (study involves using either administrative/medical record data from hospitals, primary health centres, laboratory or population datasets) or both prospective and retrospective (if study has both components). Other categories which are rarely used include report and outbreak investigation.')
     
-    Study_design_other = models.CharField(max_length=200, blank=True, default='', verbose_name='Study design (other)')
-    Study_description = models.CharField(max_length=200, blank=True, default='', help_text='Name of the first author, abbreviated name of journal and year of manuscript publication. Example: McDonald, Clin Infect Dis, 2006')
-    Case_definition = models.CharField(max_length=200, blank=True, default='')
-    Case_findings = models.CharField(max_length=200, blank=True, default='')
-    Case_findings_other = models.CharField(max_length=200, blank=True, default='')
-    Case_cap_meth = models.CharField(max_length=200, blank=True, default='')
-    Case_cap_meth_other = models.CharField(max_length=200, blank=True, default='')
+    Study_design_temporality = models.CharField(max_length=200, blank=True, default='', verbose_name='Study design (with respect to temporality)', 
+    help_text='Study classification based on the temporality of data collection. Prospective (if study involves screening or active surveillance or primary data collection) or retrospective (study involves using either administrative/medical record data from hospitals, primary health centres, laboratory or population datasets) or both prospective and retrospective (if study has both components). Other categories which are rarely used include report and outbreak investigation.')
+    
+    Case_finding_meth= models.CharField(max_length=200, blank=True, default='',verbose_name='Case finding method',
+    help_text='Method of case identification, for example: screening or active surveillance for reporting cases of impetigo or skin sores; population registers for ARF; medical record review.') 
+    
+    Case_definition_meth = models.CharField(max_length=200, blank=True, default='', verbose_name='Case definition method',
+    help_text='Indicates the process used to identify Strep A-associated diseases, such as: notifications, ICD codes, Snowmed/ICPC codes, clinical diagnosis, laboratory diagnosis, echocardiography or combined methods.   ')
 
     Data_source = models.CharField(max_length=200, blank=True, default='', verbose_name='Data source (if applicable', 
     help_text='Name of the dataset, project, consortium or specific disease register. ')
@@ -153,6 +161,7 @@ class Studies(models.Model):
     
     Specific_region = models.CharField(max_length=200, blank=True, default='', verbose_name='Specific region (if applicable)', 
     help_text='Specific region covered by the study, for example: city / town if the study involved a single institution / service; or number and location of remote communities included. ')
+    
     Climate = models.CharField(max_length=200, blank=True, default='',
     help_text='Climatic conditions based on the geographic coverage of studies, for example: “Tropical” for studies conducted at the Top-End NT, “Temperate” for studies from Victoria or NSW. ')
     
@@ -190,10 +199,10 @@ class Studies(models.Model):
     help_text='This variable briefly describes whether method limitations were specified by the authors of the publication.')
 
     Limitations_identified = models.CharField(max_length=200, blank=True)
-    Other_points = models.CharField(max_length=200, blank=True,
+    Other_points = models.TextField(blank=True, default='',
     help_text='This variable captures any other relevant notes relating to the study that may impact the interpretation of Strep A burden estimates.')
     
-    Notes = models.TextField(blank=True, default='')
+   
 
     def get_flags(self):
         return (
@@ -209,40 +218,79 @@ class Studies(models.Model):
 class Results(models.Model):
     class Meta:
         verbose_name = 'Result (Any Group)'
-        verbose_name_plural = 'Results (Any Group)'
-
+        verbose_name_plural = 'Results (Any Group)' 
+    
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE)
+
+    Unique_identifier = models.CharField(max_length=8, null = True, blank=True, 
+    help_text='Links the methodology of the study to the multiple estimates reported by the same study. Example: 2006MCDO is a unique identifier for McDonald, Clin Infect Dis, 2006, which provides a link between the methods used by 2006MCDO to obtain the 21 estimates reported in that manuscript. ')
+    
     Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category')
+    
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum Age (years)')
+    
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
     Age_original = models.CharField(max_length=50, blank=True, verbose_name='Age Category (Original)')
-    Population_gender = models.CharField(max_length=30, blank=True)
-    Indigenous_status = models.CharField(max_length=20, blank=True, default='')
-    Indigenous_population = models.CharField(max_length=30, blank=True, default='')
-    Country = models.CharField(max_length=30, blank=True, default='')
-    Jurisdiction = models.CharField(max_length=30, blank=True, default='')
-    Specific_location = models.CharField(max_length=100, blank=True, default='')
+    
+    Population_gender = models.CharField(max_length=30, blank=True, verbose_name='Population - Gender',
+    help_text='This variable captures stratification by sex (where reported), with categories of “males”, “females”, “males and females”. ')
+    
+    Indigenous_status = models.CharField(max_length=20, blank=True, default='', verbose_name='Population - Indigenous Status',
+    help_text='This variable captures stratification by Indigenous status, with categories of “general population”, “Indigenous” and “non-Indigenous”. ')
+    
+    Indigenous_population = models.CharField(max_length=30, blank=True, default='',
+    help_text='This variable captures stratification of the Indigenous population (where reported) into “Aboriginal”, “Torres Strait Islander” or “both Aboriginal and Torres Strait Islanders”. ')
+    
+    Country = models.CharField(max_length=30, blank=True, default='',
+    help_text='Country where study was conducted (for future use, in the case that international studies are added to the data collection).')
+
+    Jurisdiction = models.CharField(max_length=30, blank=True, default='',
+    help_text='Jurisdictional location of the study, categorized by individual jurisdiction name (WA, NT, SA, QLD, NSW, Vic) or combination of jurisdictions (Combination – Northern Australia or Combination- others). ')
+    
+    Specific_location = models.CharField(max_length=100, blank=True, default='', verbose_name='Specific geographic locations',
+    help_text='Point estimates stratified by specific geographic locations (where reported), for example: Kimberley, Far North Queensland or Central Australia.')
+    
     Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    
     Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
-    Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    
+    Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Observational period,',
+    help_text='Total observation time used by the study for generating the point estimate. ')
+    
     Numerator = models.PositiveIntegerField(null=True, blank=True)
+    
     Denominator = models.PositiveIntegerField(null=True, blank=True)  
+    
     Point_estimate = models.DecimalField(null=True, blank=True, max_digits=5, decimal_places=2)
+    
     Measure = models.TextField(blank=True, default='') 
-    Interpolated_from_graph = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    Age_standardisation	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    Dataset_name = 	models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    Proportion = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    Mortality_flag = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    Recurrent_ARF_flag = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    GAS_attributable_fraction = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
-    Defined_ARF	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='')
+    
+    Interpolated_from_graph = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate is interpolated and “0” or “N/A” otherwise.')
+    
+    Age_standardisation	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate is age-standardised and “0” or “N/A” otherwise.')
+    
+    Proportion = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate is a proportion and “0” or “N/A” otherwise.')
+    
+    Mortality_flag = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate is a mortality estimate and “0” or “N/A” otherwise.')
+    
+    Recurrent_ARF_flag = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate includes recurrent ARF and “0” or “N/A” otherwise (applicable to ARF burden estimates only).')
+    
+    GAS_attributable_fraction = models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate is a proportion which is GAS-specific and therefore represents a GAS-attributable fraction and “0” or “N/A” otherwise.')
+    
+    Defined_ARF	= models.CharField(max_length=1, choices=BOOL_CHOICE, blank=True, default='',
+    help_text='Indicator variable which is “1” if point estimate has defined ARF and “0” or “N/A” otherwise.')
+
+    Focus_of_study = models.CharField(max_length=200,blank=True, default='',
+    help_text='Short sentence which summarises the focus of the study, to assist with interpreting the burden estimate.')
 
     BOOL_CHOICE_FIELDS = ('Interpolated_from_graph', 'Age_standardisation', 'Dataset_name', 
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
-
-    Focus_of_study = models.TextField(blank=True, default='')
-    Notes = models.TextField(blank=True, default='')
 
     def get_burden(self):
         if self.Point_estimate is not None:
