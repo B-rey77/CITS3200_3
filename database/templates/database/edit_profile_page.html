@@ -1,0 +1,125 @@
+{% extends "database/base.html" %}
+
+{% block title %}
+	Edit Details
+{% endblock %}
+
+{% block style %}
+
+	.login_btn {
+		width: 100%;
+		background: #33ccff !important;
+		color: white !important;
+	}
+	
+	.login_btn:focus {
+		box-shadow: none !important;
+		outline: 0px !important;
+	}
+
+	.form_container {
+		margin-top: 80px;
+		margin-bottom: 150px;
+	}
+{% endblock %}
+
+{% block main %}
+	<div class="container form_container">
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card">
+				<div class="d-flex justify-content-center">
+					<h5 id="form-title">
+						Update your details below
+					</h5>
+				</div>
+				<div class="container">
+					<form class="form-signin" method="post">
+						{% csrf_token %}
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="inputEmail">
+									Email
+								</label>
+								<input type="email" name="email" id="id_input_email" class="form-control" placeholder="Email address" required autofocus value={{form.initial.email}}>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputFirstName">
+									First Name
+								</label>
+								<input type="text" name="first_name" id="id_input_first_name" class="form-control" placeholder="First Name" required
+                            value="{{form.initial.first_name}}">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputLastName">
+									Last Name
+								</label>
+								<input type="text" name="last_name" id="id_input_last_name" class="form-control" placeholder="Last Name" required
+                            value="{{form.initial.last_name}}">
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-3">
+								<label for="inputProfession">
+									Profession
+								</label>
+								<input type="text" name="profession" id="id_input_profession" class="form-control" placeholder="Profession" required
+                            value="{{form.initial.profession}}">
+							</div>
+							<div class="form-group col-md-3">
+								<label for="inputInstitution">
+									Institution
+								</label>
+								<input type="text" name="institution" id="id_input_institution" class="form-control" placeholder="Institution" required
+                            value="{{form.initial.institution}}">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputCountry">
+									Country
+								</label>
+								<input type="text" name="country" id="id_input_country" class="form-control" placeholder="Country" required
+                            value="{{form.initial.country}}">
+							</div>
+						</div>
+						{% comment %} Display form errors {% endcomment %}
+						{% for field in form %}
+                            {% for error in field.errors %}
+								<p style="color: red">
+									{{ error }} 
+								</p>
+                            {% endfor %}
+                        {% endfor %}
+                            
+                        {% if form.non_field_errors %}
+                            <div style="color: red">
+                                <p>{{form.non_field_errors}}</p>
+                            </div>        
+                        {% endif %}
+						<!-- Save/Cancel buttons -->
+						<div class="form-row">
+							<div class="form-group col-md-3">
+								<button class="mt-4 btn btn-primary flex-grow-1" type="submit">
+									Save
+								</button>
+							</div>
+						</div>
+					</form>
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<a href="{% url 'visitor' %}">
+								<button class="mt-4 btn btn-primary flex-grow-1" type="cancel">
+									Cancel
+								</button>
+							</a>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+{% endblock %}
+

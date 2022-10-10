@@ -1,3 +1,9 @@
 pyenv/
 */db.sqlite3
+db.sqlite3
 *.pyc
+*/.DS_Store
+.DS_Store
+user.code-workspace
+*.csv
+venv/

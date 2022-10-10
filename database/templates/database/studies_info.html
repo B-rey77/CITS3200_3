@@ -1,0 +1,17 @@
+<div>
+    <b>Published: </b>{{ row.Year }}
+</div>
+<div>
+    <b>Description: </b>{{ row.Study_description }}
+</div>
+<div>
+    <b>Study Group: </b>{{ row.Study_group }}
+</div>
+<div>
+    <b>Disease: </b>{{ row.Disease }}
+</div>
+{% if row.Paper_link %}
+<div>
+    <a href="{{ row.Paper_link }}">Download</a>
+</div>
+{% endif %}

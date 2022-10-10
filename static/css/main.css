@@ -1,0 +1,184 @@
+/* Fonts used in ASAVI branding */
+@font-face {
+    font-family: "CaviarDreamsBold";
+    src: url(../fonts/caviar-dreams/CaviarDreams_Bold.ttf) format("truetype"),
+         url(../fonts/caviar-dreams/CaviarDreams_Bold-webfont.woff) format("woff");
+}
+
+/* Variable definitions for ASAVI branding */
+:root {
+    --dark-cyan: #005F83;
+    --cyan: #007FA3;
+    --brown: #963821;
+    --burgundy: #9E2A2B;
+    --dark-orange: #CB6015;
+    --orange: #ED8B00;
+    --light-orange: #F1B434;
+    --yellow: #FED141;
+    --cool-grey: #75787B;
+}
+
+/* MAIN: body styling across all pages */
+body {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    background-color: var(--cyan); 
+    background-image: linear-gradient(var(--cyan), var(--dark-cyan));
+        
+}
+
+h1 { 
+    font-family: "CaviarDreamsBold";
+    font-size: 70px;
+    color: #FFFFFF;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+} 
+
+h2 {
+    font-family: "CaviarDreamsBold";
+    font-size: 30px;
+    color: var(--burgundy);
+}
+
+h3 { 
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    color: #FFFFFF;
+} 
+
+h5 {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    color: #FFFFFF;
+    font-size: 18px;
+}
+
+p {
+    color: var(--cool-grey);
+    text-align: center;
+    font-size: 15px;
+}
+
+a {
+    color: var(--dark-orange);
+}
+
+a:hover {
+    color: var(--yellow);
+}
+
+.gradient-border {
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, var(--dark-orange), var(--light-orange)) border-box;
+    border: 6px solid transparent;
+    border-radius: 50px;
+    padding: 10px 20px;
+}
+
+/* Button */
+.btn-primary {
+    background-color: var(--brown);
+    border-color: var(--brown);
+    color: var(--light-orange);
+    border-radius: 20px;
+    padding: 7px 22px;
+}
+
+.btn-primary:hover {
+    background-color: var(--light-orange);
+    border-color: var(--light-orange);
+    color: var(--brown);
+}
+
+.gogl-icon {
+    font-size: 125px; 
+    vertical-align: middle;
+}
+
+  /* HOME PAGE */
+.home-left {
+    grid-column: 1;
+    padding-top: 60px;
+}
+
+.home-right {
+    grid-column: 2;
+}
+
+.home-right img {  
+    width: 600px;  
+}
+
+.home-text {
+    padding: 5px;
+}
+
+/* OTHER PAGES */
+.container {
+    display: grid;
+}
+
+.small_card {
+    width: 450px;
+    height: 430px;
+}
+
+.user_card {
+    margin-top: auto;
+    margin-bottom: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 70px;
+}
+
+.form-control {
+    border-radius: 17px;
+}
+
+.full_width {
+    width: 100%;
+}
+
+.form_container {
+    margin-top: 130px;
+    margin-bottom: 150px;
+}
+
+.input-group-text {
+    background: var(--burgundy);
+    color: #FFFFFF;
+    border: 0;
+}
+
+#login-icon {
+    border-top-left-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+#login-title {
+    padding-bottom: 25px;
+}
+
+#password-title {
+    padding-bottom: 15px;
+}
+
+#messages{
+    color: rgb(227, 44, 44);
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* NAVBAR */
+.navbar {
+    border-bottom: 5px solid var(--brown);
+}
+
+/* FOOTER */
+footer {
+    border-top: 5px solid var(--brown);
+}

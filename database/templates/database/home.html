@@ -1,0 +1,38 @@
+{% extends "database/base.html" %}
+
+{% block title %} 
+CITS3200 Home 
+{% endblock %}
+
+{% block main %}
+
+	<div class="container form_container">
+		<div class="home-left">
+			<h1>Strep A Online Database</h1>
+			<div class="home-text">
+				<h5>Strep A causes superficial infections of the skin and throat, invasive diseases and autoimmune diseases (ARF and APSGN).</h5>
+				<h5>This live data collection summarises data from peer-reviewed scientific publications of Strep A burden of disease studies conducted since 2000.</h5>
+				<h5>Strep A burden of disease data is searchable by manuscript author, title, disease type, calendar year, population group, study setting/location and a number of other broad methodological, clinical and demographic variables.<h5>
+			</div>
+				{% if user.is_authenticated %}
+			<a class="m-auto" href='/database'>
+				<button type="button" class="btn btn-primary">
+					View database
+				</button>
+			</a>
+			{% else %}
+			<a class="m-auto" href="{% url 'login' %}">
+				<button type="button" class="btn btn-primary">
+					Log in to view database
+				</button>
+			</a>
+			{% endif %}
+		</div>
+		<div class="home-right">
+			<img src="static/img/v_asavi.png">
+		</div>
+	</div>
+
+  	{% block signup %}{% endblock %}
+
+{% endblock %}
