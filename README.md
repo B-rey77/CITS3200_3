@@ -1,7 +1,12 @@
 # CITS3200_3
 Online database providing contemporary burden of Strep A infections in Australia.
 
-## Setting up Django
+CITS3200 Project: ASAVI Strep. A. Literature Database
+=====================================================
+
+Installation (Development)
+--------------------------
+
 
 1. Make sure Python is installed on your computer and verify that you can run it in a terminal / powershell / cmd window using a command resembling `python --version` (sometimes `python3 --version`) - this should output something similar to `Python 3.10.2` (version 3 is important, although minor version numbers are less significant)
 2. Clone the git repository somewhere suitable - copy the full path name so you can use refer to it via the terminal where you have Python. (substitute this for `$REPO` in the following commands)
@@ -10,3 +15,38 @@ Online database providing contemporary burden of Strep A infections in Australia
 5. Run `pip install django` to set up the django module for python.
 6. Change to the `$REPO` directory inside the terminal (`cd $REPO`) and run `./manage.py migrate` to get Django to set up the default local database.
 7. Run the web server using `./manage.py runserver` and open the link in your browser!
+
+
+Setup virtualenv (using python version 3.8 or later):
+```
+python3 -m virtualenv pyenv
+. ./pyenv/bin/activate
+```
+
+
+First, install the required plugins/programs using pip:
+```
+pip install -r requirements.txt # or pip3 install -r requirements.txt # *depends on your python version
+```
+https://www.codegrepper.com/code-examples/shell/how+to+install+packages+from+requirements.txt
+
+Admin:
+Username: admin
+Password: Password1
+
+Second, initiate local server:
+```
+python manage.py runserver # *depends on your python version
+```
+
+HTML pages:
+localserver  - homepage
+localserver/login
+localserver/signup
+localserver/visitor (you wont get in unless youre signed up)
+localserver/admin
+
+References
+----------
+
+AWS/Docker Hub deployment courtesy of https://github.com/BluCloudEngineer/UWA-Git-Good-Presentation (under the MIT license)

@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%fbz(zj(^24&7t+kj9dy4+v^7mqa0hg^ymwo#dz+1*fk!mcb^7'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-%fbz(zj(^24&7t+kj9dy4+v^7mqa0hg^ymwo#dz+1*fk!mcb^7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -140,10 +140,10 @@ AUTH_USER_MODEL = 'database.Users'
 
 # for password reset: email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_FROM =  'group3.22919874@gmail.com'
-EMAIL_HOST_USER = 'group3.22919874@gmail.com'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = os.environ.get('SMTP_HOST')
+EMAIL_FROM =  os.environ.get('SMTP_EMAIL_FROM')
+EMAIL_HOST_USER = os.environ.get('SMTP_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('SMTP_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
