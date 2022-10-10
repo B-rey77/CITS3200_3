@@ -60,6 +60,18 @@ Resources:
       Description: "IAM Role to deploy code revisions to the EC2 Instance"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
+      Policies:
+        - PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "ssm:DescribeParameters"
+                  - "ssm:GetParameters"
+                  - "ssm:GetParameter"
+                  - "kms:Decrypt"
+                Resource: "*"
+          PolicyName: "ParameterStoreAccess"
       Tags:
         - Key: "Project"
           Value: !Ref ProjectName
