@@ -9,6 +9,7 @@ services:
       - "443:443"
     volumes:
       - ./certs:/var/lib/
+      - ./well_known:/well_known
     environment:
       - DB_HOST=db
       - DB_NAME=django

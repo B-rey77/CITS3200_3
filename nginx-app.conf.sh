@@ -49,7 +49,7 @@ server {
 
     }
 
-    location /djstatic {
+    location /static {
         alias /app/djstatic;
     }
 
