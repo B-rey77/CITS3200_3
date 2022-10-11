@@ -10,11 +10,12 @@ from django.contrib import messages #import for login messages
 from django.contrib.auth.decorators import login_required
 
 from django.core.mail import EmailMessage
+
 from django.contrib import messages #import for login messages
 
 # Create your views here.
 from database.models import * 
-from database.forms import CreateUserForm, AccountUpdateForm, StudiesForm #createrform imported from forms.py
+from database.forms import CreateUserForm, AccountUpdateForm, StudiesForm, ImportDataForm #createrform imported from forms.py
 
 # Prevent usage of browser back button
 from django.views.decorators.cache import cache_control
@@ -28,6 +29,9 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.db.models.query_utils import Q
 from django.contrib.auth.tokens import default_token_generator
+
+from database.importer import import_methods_results
+import io
 
 def home(request):
 	return render(request, 'database/home.html')
@@ -223,3 +227,23 @@ def add_study(request):
             form.save()
     context = {'form':form}
     return render(request, 'database/add_study.html', context)
+
+def import_data(request):
+	form = ImportDataForm()
+	res = None
+	if request.method == 'POST':
+		form = ImportDataForm(request.POST, request.FILES)
+		if form.is_valid():
+			# import data
+			studies_data = form.cleaned_data['studies_file'].read().decode('utf-8', errors='replace')
+			results_data = form.cleaned_data['results_file'].read().decode('utf-8', errors='replace')
+
+			studies_stream = io.StringIO(studies_data)
+			results_stream = io.StringIO(results_data)
+
+			res = import_methods_results(studies_stream, results_stream)
+
+	return render(request, 'database/import_data.html', context={
+		'form': form,
+		'results': res,
+	})
