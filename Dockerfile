@@ -7,6 +7,7 @@ COPY database/ database/
 COPY Userlogins/ Userlogins/
 COPY manage.py manage.py
 COPY requirements.txt requirements.txt
+COPY run-container.sh run-container.sh
 
 RUN pip3 install -r requirements.txt
 
@@ -14,4 +15,4 @@ EXPOSE 8000
 
 VOLUME /webapp/db
 
-CMD [ "/webapp/manage.py", "runserver", "0.0.0.0:8000" ]
+CMD [ "/webapp/run-container.sh" ]
