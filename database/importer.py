@@ -103,7 +103,7 @@ def import_methods_results(studies_csv, results_csv):
                 study.Notes += '\nData Inconsistencies Detected:\n' + '\n'.join(row_errors)
                 all_errors.append('Studies/Methods row %d is inconsistent: %s' % (n, ', '.join(row_errors)))
 
-            if not is_approved in row:
+            if not 'is_approved' in row:
                 study.is_approved = True
             study.save()
 
