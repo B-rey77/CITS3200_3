@@ -16,7 +16,7 @@ RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
 
 RUN set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends openssl;
+    apt-get install -y --no-install-recommends openssl certbot;
 
 RUN /app/manage.py collectstatic
 RUN /app/manage.py check
@@ -31,7 +31,7 @@ ENV DB_HOST localhost
 
 VOLUME /etc/letsencrypt
 VOLUME /var/lib/letsencrypt
-VOLUME /well_known
+#VOLUME /well_known
 
 #VOLUME /var/lib/postgresql/data
 
