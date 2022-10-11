@@ -56,3 +56,8 @@ class StudiesForm(forms.ModelForm):
 	class Meta:
 		model = Studies
 		fields = '__all__'
+
+
+class ImportDataForm(forms.Form):
+	studies_file = forms.FileField(required=True, label='Upload Studies/Methods spreadsheet in CSV format')
+	results_file = forms.FileField(required=True, label='Upload Results spreadsheet in CSV format')

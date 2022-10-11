@@ -5,47 +5,22 @@
 {% endblock %}
 
 {% block style %}
-	.user_card {
-		margin-top: auto;
-		margin-bottom: auto;
-		background: rgba(255, 255, 255);
-		position: relative;
-		display: flex;
-		justify-content: center;
-		flex-direction: column;
-		padding: 10px;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-		-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-		-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-		border-radius: 5px;
-
-	}
-
-	.login_btn {
-		width: 100%;
-		background: #33ccff !important;
-		color: white !important;
-	}
-	
-	.login_btn:focus {
-		box-shadow: none !important;
-		outline: 0px !important;
-	}
 
 	.form_container {
 		margin-top: 80px;
 		margin-bottom: 150px;
 	}
+	
 {% endblock %}
 
 {% block main %}
 	<div class="container form_container">
 		<div class="d-flex justify-content-center h-100">
-			<div class="user_card">
+			<div class="user_card card gradient-border">
 				<div class="d-flex justify-content-center">
-					<h5 id="form-title">
-						Update your details below
-					</h5>
+					<h2 id="form-title">
+						Update Profile Details
+					</h2>
 				</div>
 				<div class="container">
 					<form class="form-signin" method="post">
@@ -115,19 +90,16 @@
                         {% endif %}
 						<!-- Save/Cancel buttons -->
 						<div class="form-row">
-							<div class="form-group col-md-3">
-								<button class="mt-4 btn btn-primary flex-grow-1" type="submit">
-									Save
-								</button>
-							</div>
+							<button class="mt-4 btn btn-primary full_width" type="submit">
+								Save
+							</button>
+
 						</div>
 					</form>
-					<div class="form-row">
-						<div class="form-group col-md-3">
-							<a href="{% url 'visitor' %}">
-								<button class="mt-4 btn btn-primary flex-grow-1" type="cancel">
-									Cancel
-								</button>
+					<div class="form-row justify-content-center">
+						<div class="col-md-3 justify-content-center" id="cancel-btn">
+							<a class="justify-content-center" href="{% url 'visitor' %}">
+								Cancel
 							</a>
 						</div>
 					</div>

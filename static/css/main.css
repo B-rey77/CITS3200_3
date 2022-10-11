@@ -18,42 +18,62 @@
     --cool-grey: #75787B;
 }
 
-/* Main: body styling across all pages */
+/* MAIN: body styling across all pages */
 body {
     font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-    /* background-color: var(--cyan);  */
+    background-color: var(--cyan); 
     background-image: linear-gradient(var(--cyan), var(--dark-cyan));
         
 }
 
-/* Homepage */
-.home-left {
-    grid-column: 1;
-    padding-top: 100px;
-}
-
-.home-left h1{ 
+h1 { 
     font-family: "CaviarDreamsBold";
     font-size: 70px;
     color: #FFFFFF;
-    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
 } 
 
-.home-left h3{ 
+h2 {
+    font-family: "CaviarDreamsBold";
+    font-size: 30px;
+    color: var(--burgundy);
+}
+
+h3 { 
     font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
     color: #FFFFFF;
 } 
 
-.home-right {
-    grid-column: 2;
+h5 {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    color: #FFFFFF;
+    font-size: 18px;
 }
 
-.home-right img {  
-    width: 600px;  
+p {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    color: var(--cool-grey);
+    text-align: center;
+    font-size: 15px;
 }
 
-.container {
-    display: grid;
+a {
+    color: var(--dark-orange);
+}
+
+a:hover {
+    color: var(--yellow);
+}
+
+span {
+    vertical-align: middle;
+}
+
+.gradient-border {
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, var(--dark-orange), var(--light-orange)) border-box;
+    border: 6px solid transparent;
+    border-radius: 50px;
+    padding: 10px 20px;
 }
 
 /* Button */
@@ -71,8 +91,143 @@ body {
     color: var(--brown);
 }
 
-/* Main: styling of the icons used across all pages */
 .gogl-icon {
     font-size: 125px; 
     vertical-align: middle;
+}
+
+  /* HOME PAGE */
+.home-left {
+    grid-column: 1;
+    padding-top: 60px;
+}
+
+.home-right {
+    grid-column: 2;
+}
+
+.home-right img {  
+    width: 600px;  
+}
+
+.home-text {
+    padding: 5px;
+}
+
+#home-title {
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* OTHER PAGES */
+.container {
+    display: grid;
+}
+
+.small_card {
+    width: 450px;
+    height: 430px;
+}
+
+.user_card {
+    margin-top: auto;
+    margin-bottom: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 70px;
+}
+
+.form-control {
+    border-radius: 17px;
+}
+
+.full_width {
+    width: 100%;
+}
+
+.form_container {
+    margin-top: 130px;
+    margin-bottom: 300px;
+}
+
+.input-group-text {
+    background: var(--burgundy);
+    color: #FFFFFF;
+    border: 0;
+}
+
+.gogl-icon{
+    font-size: 30px;
+    color: var(--brown)
+}
+
+.icon-label {
+    padding-left: 10px;
+    color: var(--light-grey)
+}
+
+.password-row {
+    padding-bottom: 15px;
+}
+
+.submit-row {
+    padding-top: 10px;
+}
+
+a.icon-label {
+    text-decoration: underline;
+}
+
+
+#login-icon {
+    border-top-left-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+#login-title {
+    padding-bottom: 25px;
+}
+
+#title-small-btm {
+    padding-bottom: 15px;
+}
+
+#messages{
+    color: rgb(227, 44, 44);
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#cancel-btn {
+    padding-top: 15px;
+    text-align: center;
+}
+
+/* NAVBAR */
+.navbar {
+    border-bottom: 5px solid var(--brown);
+}
+
+/* FOOTER */
+footer {
+    border-top: 5px solid var(--brown);
+    background-color: var(--brown);
+}
+
+footer * {
+    color: var(--dark-orange)
+}
+
+footer span {
+    padding: 5px;
+}
+
+#footer-btm {
+    background-color: var(--burgundy);
 }

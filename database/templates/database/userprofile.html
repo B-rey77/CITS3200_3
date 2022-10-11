@@ -1,14 +1,11 @@
 {% extends "database/base.html" %}
 
 {% block title %} 
-CITS User Profile 
+User Profile 
 {% endblock %}
 
 {% block style %}
-	.form_container {
-		margin-top: 80px;
-		margin-bottom: 150px;
-	}
+
 {% endblock %}
 
 {% block main %}
@@ -16,106 +13,111 @@ CITS User Profile
 		<div class="container py-5 h-100 form_container">
 			<div class="row d-flex justify-content-center align-items-center h-100">
 				<div class="col col-xl-8">
-					<div class="card mb-4">
+					<div class="card mb-4 gradient-border">
 						<div class="card-body">
+							<div class="d-flex justify-content-center" id="title-small-btm">
+								<h2>
+									Profile
+								</h2>
+							</div>
 							<div class="row">
-								<div class="col-sm-3">
-									<p class="mb-0">
-										<i class="material-icons gogl-icon">
-											badge
-										</i>
+								<div class="col-sm-4">
+									<span class="material-icons gogl-icon">
+										badge
+									</span>
+									<span class="icon-label">
 										Full Name
-									</p>
+									</span>
 								</div>
-								<div class="col-sm-9">
-									<p class="text-muted mb-0">
+								<div class="col-sm-8">
+									<span class="text-muted mb-0">
 										{{request.user.first_name}} {{request.user.last_name}}
-									</p>
+									</span>
 								</div>
 							</div>
 							<hr>
 							<div class="row">
-								<div class="col-sm-3">
-									<p class="mb-0">
-										<i class="material-icons gogl-icon">
-											mail
-										</i>
+								<div class="col-sm-4">
+									<span class="material-icons gogl-icon">
+										mail
+									</span>
+									<span class="icon-label">
 										Email
-									</p>
+									</span>
 								</div>
-								<div class="col-sm-9">
-									<p class="text-muted mb-0">
+								<div class="col-sm-8">
+									<span class="text-muted mb-0">
 										{{request.user.email}} 
-									</p>
+									</span>
 								</div>
 							</div>
 							<hr>
 							<div class="row">
-								<div class="col-sm-3">
-									<p class="mb-0">
-										<i class="material-icons gogl-icon">
-											account_circle
-										</i>
+								<div class="col-sm-4">
+									<span class="material-icons gogl-icon">
+										account_circle
+									</span>
+									<span class="icon-label">
 										Profession
-									</p>
+									</span>
 								</div>
-								<div class="col-sm-9">
-									<p class="text-muted mb-0">
+								<div class="col-sm-8">
+									<span class="text-muted mb-0">
 										{{request.user.profession}}
-									</p>
+									</span>
 								</div>
 							</div>
 							<hr>
 							<div class="row">
-								<div class="col-sm-3">
-									<p class="mb-0">
-										<i class="material-icons gogl-icon">
-											home_work
-										</i>
-										Institution
-									</p>
+								<div class="col-sm-4">
+									<span class="material-icons gogl-icon">
+										home_work
+									</span>
+									<span class="icon-label">
+										Instiution
+									</span>
 								</div>
-								<div class="col-sm-9">
-									<p class="text-muted mb-0">
+								<div class="col-sm-8">
+									<span class="text-muted mb-0">
 										{{request.user.institution}}
-									</p>
+									</span>
 								</div>
 							</div>
 							<hr>
 							<div class="row">
-								<div class="col-sm-3">
-									<p class="mb-0">
-										<i class="material-icons gogl-icon">
-											map
-										</i>
+								<div class="col-sm-4">
+									<span class="material-icons gogl-icon">
+										flag
+									</span>
+									<span class="icon-label">
 										Country
-									</p>
+									</span>
 								</div>
-								<div class="col-sm-9">
-									<p class="text-muted mb-0">
+								<div class="col-sm-8">
+									<span class="text-muted mb-0">
 										{{request.user.country}} 
-									</p>
+									</span>
 								</div>
 							</div>
 							<hr>
 							<!-- Edit account details -->
 							<div class="row">                            
-								<div class="col-sm-3">
+								<div class="col-sm-4">
 									<span class="material-icons gogl-icon">
 										edit
 									</span>
-									<a href="{% url 'edit_profile_page' %}" class="ml-2">
+									<a class="m-auto icon-label" href="{% url 'edit_profile_page' %}">
 										Edit Details
 									</a>
 								</div>
 							</div>
 							<hr>
 							<div class="row">  
-								<div class="col-sm-9">
+								<div class="col-sm-8">
 									<span class="material-icons gogl-icon">
 										lock
 									</span>
-									<a class="m-auto" href="{% url 'password_change' %}">
+									<a class="m-auto icon-label" href="{% url 'password_change' %}">
 										Change Password
 									</a>
 								</div>
