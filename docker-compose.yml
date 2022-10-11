@@ -8,8 +8,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./etc-letsencrypt:/etc/letsencrypt
-      - ./well_known:/well_known
+      - etc_letsencrypt:/etc/letsencrypt
+      - le_well_known:/well_known
     environment:
       - DB_HOST=db
       - DB_NAME=django
@@ -40,7 +40,7 @@ services:
       restart: always
       #user: postgres:postgres # Optional: see below
       volumes:
-          - ./pgbackups:/backups
+          - pgbackups:/backups
       links:
           - db:db
       depends_on:
@@ -61,14 +61,16 @@ services:
   letsencrypt:
       image: certbot/certbot
       volumes:
-          - ./etc-letsencrypt:/etc/letsencrypt
-          - ./var-letsencrypt:/var/lib/letsencrypt
-          - ./well_known:/well_known
+          - etc_letsencrypt:/etc/letsencrypt
+          - le_well_known:/well_known
       depends_on:
           - app
       command: >
-        certonly -t -d ${DJANGO_HOSTNAME} --non-interactive --agree-tos -m ${LETS_ENCRYPT_EMAIL} --cert-name sslcert --webroot -w /well_known --test-cert
+        certonly -t -d ${DJANGO_HOSTNAME} --non-interactive --agree-tos -m ${LETS_ENCRYPT_EMAIL} --cert-name sslcert --webroot -w /well_known
 
 
 volumes:
   pgsql-data:
+  etc_letsencrypt:
+  le_well_known:
+  pgbackups:
