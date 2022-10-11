@@ -123,7 +123,9 @@ Resources:
           amazon-linux-extras install docker -y
           wget https://aws-codedeploy-${AWS::Region}.s3.${AWS::Region}.amazonaws.com/latest/install
           chmod 700 install
-          ./install auto          
+          ./install auto
+          wget https://github.com/docker/compose/releases/latest/download/docker-compose-\$(uname -s)-\$(uname -m) -O /usr/local/bin/docker-compose
+          chmod -v +x /usr/local/bin/docker-compose
           service docker start
           usermod -a -G docker ec2-user
           chkconfig docker on
