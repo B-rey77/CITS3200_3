@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.utils.html import format_html
 from django.template.loader import render_to_string
 from django.urls import reverse
-
+# from rangefilter.filters import NumericRangeFilter
 from admin_action_buttons.admin import ActionButtonsMixin
 
 from database.models import Users, Studies, Results, proxies, is_approved_proxies # Custom admin form imported from models.py
@@ -116,6 +116,11 @@ class StudiesAdmin(ViewModelAdmin):
         ('Study_design', ChoiceDropdownFilter), 
         ('Study_group',ChoiceDropdownFilter), 
         ('Age_general',ChoiceDropdownFilter), 
+       # ('Age_min', NumericRangeFilter),
+       # ('Age_max', NumericRangeFilter),
+        ('Ses_reported', DropdownFilter),
+        ('Mortality_data', DropdownFilter),
+        ('Method_limitations', DropdownFilter),
         'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
     ordering = ('Paper_title', 'Study_group')
     search_fields = ('Paper_title', 'Study_description')
@@ -233,7 +238,8 @@ class ResultsAdmin(ViewModelAdmin):
         ('Study__Study_group',ChoiceDropdownFilter), 
         ('Age_general',ChoiceDropdownFilter), 
         ('Interpolated_from_graph',ChoiceDropdownFilter), 
-        'Age_standardisation', 'Dataset_name',
+        ('Age_standardisation', ChoiceDropdownFilter),
+         'Dataset_name',
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
     ordering = ('-Study__Study_group', )    
