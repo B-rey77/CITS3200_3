@@ -5,4 +5,6 @@
 # build the Docker container on the EC2 instance
 
 cd /tmp/webapp
-docker build -t strep-a-database .
+
+#docker build -t strep-a-database .
+docker-compose build
