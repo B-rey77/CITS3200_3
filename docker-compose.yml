@@ -8,7 +8,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./certs:/var/lib/
+      - ./etc-letsencrypt:/etc/letsencrypt
       - ./well_known:/well_known
     environment:
       - DB_HOST=db
