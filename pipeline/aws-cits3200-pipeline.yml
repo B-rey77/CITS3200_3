@@ -3,9 +3,10 @@ Description: "Deploys the pipeline to run unit tests and deploy the sample Pytho
 
 Parameters:
   ProjectName:
-    Default: "UWA CITS3200_3 Project"
+    Default: "UWA-CITS3200-3-Project"
     Description: "The name of the project deployed on AWS"
     Type: "String"
+    AllowedPattern: "[a-zA-Z0-9-]+"
 
   GitHubRepositoryId:
     Type: "String"
@@ -33,7 +34,7 @@ Parameters:
     Description: "The ARN of the GitHub to AWS Connection"
     Type: "String"
 
-  EC2SSHKeyName:
+  EC2SSHKeyName: # https://stackoverflow.com/questions/70881426/aws-cloudformation-default-keypair-for-ec2
     Type: "String"
     Description: "Name of EC2 key pair to install on web server instance"
     Default: ""
@@ -242,6 +243,7 @@ Resources:
                   - "ec2:RevokeSecurityGroupIngress"
                   - "ec2:RunInstances"
                   - "ec2:StopInstances"
+                  - "ec2:StartInstances"
                   - "ec2:TerminateInstances"
                 Resource: "*"
           PolicyName: "EC2-Access"
@@ -252,6 +254,7 @@ Resources:
                 Action:
                   - "iam:AddRoleToInstanceProfile"
                   - "iam:AttachRolePolicy"
+                  - "iam:PutRolePolicy"
                   - "iam:CreateInstanceProfile"
                   - "iam:CreateRole"
                   - "iam:DeleteInstanceProfile"
@@ -285,7 +288,7 @@ Resources:
               Configuration:
                 ConnectionArn: !Ref GitHubConnectionArn
                 FullRepositoryId: !Ref GitHubRepositoryId
-                BranchName: !Reg GitHubBranchName
+                BranchName: !Ref GitHubBranchName
                 OutputArtifactFormat: "CODE_ZIP"
                 DetectChanges: true
               Name: "Source"

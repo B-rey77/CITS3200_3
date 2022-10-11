@@ -1,8 +1,7 @@
-# CITS3200_3
-Online database providing contemporary burden of Strep A infections in Australia.
-
 CITS3200 Project: ASAVI Strep. A. Literature Database
 =====================================================
+
+Online database providing contemporary burden of Strep A infections in Australia.
 
 Installation (Development)
 --------------------------
@@ -45,6 +44,15 @@ localserver/login
 localserver/signup
 localserver/visitor (you wont get in unless youre signed up)
 localserver/admin
+
+Installation (deployment)
+-------------------------
+
+1. Create a Docker Hub account, and create an access token for GitHub actions to use.
+2. Add the access token (username / token) as GitHub Repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` for the repository (under Settings -> Security -> Secrets -> Actions).
+3. Create an AWS account (or use an existing one) and access the CodePipeline console.
+4. Under Settings -> Connections, create a connection and point it to the GitHub repository (it will ask you to login). Once this is done, copy the ARN corresponding to the created GitHub connection.
+5. ...
 
 References
 ----------

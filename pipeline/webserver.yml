@@ -60,6 +60,18 @@ Resources:
       Description: "IAM Role to deploy code revisions to the EC2 Instance"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
+      Policies:
+        - PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "ssm:DescribeParameters"
+                  - "ssm:GetParameters"
+                  - "ssm:GetParameter"
+                  - "kms:Decrypt"
+                Resource: "*"
+          PolicyName: "ParameterStoreAccess"
       Tags:
         - Key: "Project"
           Value: !Ref ProjectName
@@ -111,7 +123,9 @@ Resources:
           amazon-linux-extras install docker -y
           wget https://aws-codedeploy-${AWS::Region}.s3.${AWS::Region}.amazonaws.com/latest/install
           chmod 700 install
-          ./install auto          
+          ./install auto
+          wget https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -O /usr/local/bin/docker-compose
+          chmod -v +x /usr/local/bin/docker-compose
           service docker start
           usermod -a -G docker ec2-user
           chkconfig docker on
@@ -126,6 +140,16 @@ Resources:
           FromPort: 80
           IpProtocol: "tcp"
           ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          Description: "HTTPS access"
+          FromPort: 443
+          IpProtocol: "tcp"
+          ToPort: 443
+        - CidrIp: "0.0.0.0/0"
+          Description: "SSH access"
+          FromPort: 22
+          IpProtocol: "tcp"
+          ToPort: 22
 
       Tags:
         - Key: "Name"
