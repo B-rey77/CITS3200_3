@@ -119,11 +119,9 @@ class Studies(models.Model):
     Unique_identifier = models.CharField(max_length=8, null=True, blank=True, verbose_name='Unique Identifier',
     help_text='Links the methods dataset to the results dataset, which contains estimates reported by the same study (often multiple results per study). Each Unique Identifier consists of the year of publication followed by the first four letters of the first author. Example: 2006MCDO is a unique identifier for McDonald, Clin Infect Dis, 2006, which provides a link between the methods used by 2006MCDO to obtain the 21 estimates reported in that manuscript. ') 
     
-    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year', help_text='Year of publication of manuscript/report.')
-
-    Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group',
-    help_text='Broad classification of the Strep A-associated disease type that the study was based on: (i) Superficial skin and/or throat infections, (ii) Invasive Strep A infections, (iii) Acute Rheumatic Fever (ARF), (iv) Acute Post Streptococcal Glomerulonephritis (APSGN).')
-    
+    Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year',
+    help_text='Year of publication of manuscript/report.')
+  
     Disease = models.CharField(max_length=60, blank=True)
     STUDY_DESIGNS = (
         ('CS', 'Case series'),
