@@ -7,23 +7,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib import admin
 from django.conf import settings
 
-BOOL_CHOICE = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-        ('?', 'N/A'),
-) 
-
-AGE_GROUPS = (
-        ('ALL', 'All'),
-        ('AD', 'Adult'),
-        ('C', 'Children'),
-        ('AL', 'Adolescents'),
-        ('EA', 'Elderly Adults'),
-        ('I', 'Infant'),
-        ('M', 'Mix'),
-        ('N/A', 'N/A')
-)
-
 STUDY_GROUPS = (
         ('SST', 'Superficial skin and throat'),
         ('IG', 'Invasive GAS'),
@@ -220,11 +203,17 @@ class Studies(models.Model):
     is_approved = models.BooleanField(default=False, verbose_name='Study Approved', blank=False, help_text=_('Designates whether this study has been approved or is pending approval.'))
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Study Added By User')
     
+    def get_study_design(self):
+        for code, desc in self.STUDY_DESIGNS:
+            if code == self.Study_design:
+                return desc
+        return ''
+
     def get_flags(self):
         return (
             {'field': field, 'value': getattr(self, field.name)}
             for field in self._meta.get_fields()
-            if isinstance(field, models.BooleanField) #and getattr(self, field.name) is not None
+            if isinstance(field, models.BooleanField) and field.name != 'is_approved'
         )
 
     def __str__(self):
@@ -238,7 +227,7 @@ class Results(models.Model):
     
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE, null=True)
 
-    Age_general = models.CharField(max_length=5, choices=AGE_GROUPS, blank=True, verbose_name='Age Category (General)')
+    Age_general = models.CharField(max_length=50, blank=True, verbose_name='Age Category (General)')
     
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum Age (years)')
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
@@ -308,36 +297,17 @@ class Results(models.Model):
     is_approved = models.BooleanField(default=False, verbose_name='Results Approved', blank=False, help_text=_('Designates whether this study has been approved or is pending approval.'))
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Results Added By User')
     
-    def get_burden(self):
-        if self.Point_estimate is not None:
-            return "%0.2f%%" % self.Point_estimate
-        elif self.Numerator is not None and self.Denominator is not None:
-            return "%d/%d" % (self.Numerator, self.Denominator)
-        elif self.Numerator is None and self.Denominator is None and self.Point_estimate is None:
-            return self.Point_estimate_original
-        else:
-            return 'Unknown'
-
     def get_flags(self):
-        # return array of flags for displaying in 2 columns
-        flags = []
-        prev = None
-        for bool_field in self.BOOL_CHOICE_FIELDS:
-            field = self._meta.get_field(bool_field)
-            value = getattr(self, bool_field)
-            if not (value == 'Y' or value == 'N'):
-                continue
-
-            flags.append({
-                'field': field,
-                'value': value,
-            })
-        return flags
+        return (
+            {'field': field, 'value': getattr(self, field.name)}
+            for field in self._meta.get_fields()
+            if isinstance(field, models.BooleanField) and field.name != 'is_approved'
+        )
 
     def __str__(self):
         if not self.Study:
-            return "Burden: %s" % (self.get_burden(), )
-        return '%s (Burden: %s)' % (self.Study.Paper_title, self.get_burden())
+            return "Burden: %s" % (self.Point_estimate, )
+        return '%s (Burden: %s)' % (self.Study.Paper_title, self.Point_estimate)
 
 class ProxyManager(models.Manager):
     filter_args = None

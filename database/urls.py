@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logout'),  
     path('database_search/', views.database_search, name='database_search'),  
     path('add_study/', views.add_study, name='add_study'),
+    path('import_data/', views.import_data, name='import_data'),
     
     # Activate email
 	path('activate/<uidb64>/<token>/', views.activate, name='activate'),

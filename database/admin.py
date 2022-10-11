@@ -63,18 +63,10 @@ def get_age_html(obj):
     else:
         res = None
     
-    if obj.Age_general:
-        age_general = obj.Age_general
-        for age_id, age_desc in obj.AGE_GROUPS:
-            if obj.Age_general == age_id:
-                age_general = age_desc
-                break
-        if res:
-            return format_html('<b>{}</b> ({})', age_general, res)
-        else:
-            return format_html('<b>{}</b>', age_general)
+    if res:
+        return format_html('<b>{}</b> ({})<br>{}', obj.Age_original, obj.Age_general, res)
     else:
-        return res or 'Any'
+        return format_html('<b>{}</b> ({})', obj.Age_original, obj.Age_general)
 
 class ResultsInline(admin.StackedInline):
     model = Results
@@ -133,8 +125,7 @@ class StudiesAdmin(ViewModelAdmin):
 
     @admin.display(description='Flags')
     def get_flags_html(self, obj):
-        return render_to_string('database/studies_flags.html', context={'row': obj})
-
+        return render_to_string('database/row_flags.html', context={'row': obj})
     
     @admin.display(description='Population')
     def get_population_html(self, obj):
@@ -152,9 +143,9 @@ class StudiesAdmin(ViewModelAdmin):
 
     @admin.display(description='Case Info', ordering='Case_definition')
     def get_case_html(self, obj):
-        return format_html('<div><b>Case Definition: </b>{}<br><b>Case Cap Meth.: </b>{}<br>'
+        return format_html('<div><b>Case Definition: </b>{}<br><b>Surveillance: </b>{}<br>'
             '<b>Case Findings: </b>{}<br><b>Data Source: </b>{}</div>',
-            obj.Case_definition, obj.Case_cap_meth, obj.Case_findings, obj.Data_source,
+            obj.Case_definition, obj.Surveillance_setting, obj.Case_findings, obj.Data_source,
         )
 
     @admin.display(ordering='Age_general', description='Age Bracket')
@@ -188,15 +179,14 @@ class ResultsAdmin(ViewModelAdmin):
 
     @admin.display(description='Disease Burden')
     def get_measure(self, obj):
-        
-        return format_html('<div><b>Burden: {}</b><br><br>Measure: {}</div>',
-            obj.get_burden(), obj.Measure
+        return format_html('<div><b>Numerator: </b>{}<br><b>Denominator: </b>{}<br><b>Point estimate: </b>{}<br><br>Measure: {}</div>',
+            obj.Numerator, obj.Denominator, obj.Point_estimate, obj.Measure
         )
 
     @admin.display(description='Population', ordering='Population_gender')
     def get_population_html(self, obj):
-        return format_html('<div><b>Gender: </b>{}</div><br><div><b>Indigenous: </b>{}<br>{}</div>',
-            obj.Population_gender, obj.Indigenous_status, obj.Indigenous_population
+        return format_html('<div><b>Gender: </b>{}</div><br><div><b>Indigenous: </b>{}</div>',
+            obj.Population_gender, obj.Indigenous_population
         )
     
     @admin.display(description='Location', ordering='Specific_location')
@@ -207,7 +197,7 @@ class ResultsAdmin(ViewModelAdmin):
 
     @admin.display(description='Flags')
     def get_flags_html(self, obj):
-        return render_to_string('database/results_flags.html', context={'row': obj})
+        return render_to_string('database/row_flags.html', context={'row': obj})
 
     @admin.display(description='Observation Time')
     def get_observation_time(self, obj):

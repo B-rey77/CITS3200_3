@@ -16,7 +16,12 @@
             {% endif %}
 
             {% if model.add_url %}
-              <td><a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a></td>
+              <td style="text-align: right;">
+                  <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
+                  {% if model.object_name == 'Studies' or model.object_name == 'Results' %}
+                  <a href="{% url 'import_data' %}" class="addlink">{% translate 'Import' %}</a>&nbsp;&nbsp;
+                  {% endif %}
+              </td>
             {% else %}
               <td></td>
             {% endif %}
