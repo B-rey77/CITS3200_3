@@ -30,7 +30,6 @@ h1 {
     font-family: "CaviarDreamsBold";
     font-size: 70px;
     color: #FFFFFF;
-    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
 } 
 
 h2 {
@@ -51,6 +50,7 @@ h5 {
 }
 
 p {
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
     color: var(--cool-grey);
     text-align: center;
     font-size: 15px;
@@ -62,6 +62,10 @@ a {
 
 a:hover {
     color: var(--yellow);
+}
+
+span {
+    vertical-align: middle;
 }
 
 .gradient-border {
@@ -110,6 +114,10 @@ a:hover {
     padding: 5px;
 }
 
+#home-title {
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+}
+
 /* OTHER PAGES */
 .container {
     display: grid;
@@ -144,7 +152,7 @@ a:hover {
 
 .form_container {
     margin-top: 130px;
-    margin-bottom: 150px;
+    margin-bottom: 300px;
 }
 
 .input-group-text {
@@ -152,6 +160,29 @@ a:hover {
     color: #FFFFFF;
     border: 0;
 }
+
+.gogl-icon{
+    font-size: 30px;
+    color: var(--brown)
+}
+
+.icon-label {
+    padding-left: 10px;
+    color: var(--light-grey)
+}
+
+.password-row {
+    padding-bottom: 15px;
+}
+
+.submit-row {
+    padding-top: 10px;
+}
+
+a.icon-label {
+    text-decoration: underline;
+}
+
 
 #login-icon {
     border-top-left-radius: 17px;
@@ -162,7 +193,7 @@ a:hover {
     padding-bottom: 25px;
 }
 
-#password-title {
+#title-small-btm {
     padding-bottom: 15px;
 }
 
@@ -170,6 +201,11 @@ a:hover {
     color: rgb(227, 44, 44);
     padding: 10px;
     margin-top: 10px;
+    text-align: center;
+}
+
+#cancel-btn {
+    padding-top: 15px;
     text-align: center;
 }
 
@@ -181,4 +217,17 @@ a:hover {
 /* FOOTER */
 footer {
     border-top: 5px solid var(--brown);
+    background-color: var(--brown);
+}
+
+footer * {
+    color: var(--dark-orange)
+}
+
+footer span {
+    padding: 5px;
+}
+
+#footer-btm {
+    background-color: var(--burgundy);
 }
