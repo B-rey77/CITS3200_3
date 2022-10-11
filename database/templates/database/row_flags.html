@@ -1,6 +1,7 @@
 <table>
     <tbody>
         {% for flag in row.get_flags %}
+        {% if flag.value is not None %}
             <tr>
                 <th>{{ flag.field.verbose_name }}</th>
                 <td>{% if flag.value == True %}
@@ -12,6 +13,7 @@
                     {% endif %}
                 </td>
             </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
