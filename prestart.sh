@@ -20,3 +20,5 @@ export SSL_CERT SSL_KEY
 # apply migrations, or wait until DB is started up then try again
 /app/manage.py migrate || sleep 10 && /app/manage.py migrate
 
+/app/manage.py createsuperuser --no-input --first_name CITS3200 --last_name Admin --email $ADMIN_EMAIL || echo 'Superuser already exists'
+
