@@ -27,11 +27,11 @@ COPY dhparam.pem /etc/ssl/dhparam.pem
 # override uwsgi-nginx generated file
 COPY nginx-app.conf.sh /app/nginx-app.conf.sh
 
-ENV DB_HOST localhost
+#ENV DB_HOST localhost
 
 VOLUME /etc/letsencrypt
-VOLUME /var/lib/letsencrypt
-#VOLUME /well_known
+#VOLUME /var/lib/letsencrypt
+VOLUME /well_known
 
 #VOLUME /var/lib/postgresql/data
 

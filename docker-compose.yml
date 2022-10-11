@@ -17,6 +17,7 @@ services:
       - DB_PASS=password
       - DJANGO_DEBUG
       - DJANGO_HOSTNAME
+      - LETS_ENCRYPT_EMAIL
       - SMTP_HOST
       - SMTP_USER
       - SMTP_PASSWORD
@@ -58,15 +59,15 @@ services:
           - BACKUP_KEEP_MONTHS=6
           - HEALTHCHECK_PORT=8081
 
-#  letsencrypt:
-#      image: certbot/certbot
-#      volumes:
-#          - etc_letsencrypt:/etc/letsencrypt
-#          - le_well_known:/well_known
-#      depends_on:
-#          - app
-#      command: >
-#        certonly -t -d ${DJANGO_HOSTNAME} --non-interactive --agree-tos -m ${LETS_ENCRYPT_EMAIL} --cert-name sslcert --webroot -w /well_known
+  letsencrypt:
+      image: certbot/certbot
+      volumes:
+          - etc_letsencrypt:/etc/letsencrypt
+          - le_well_known:/well_known
+      depends_on:
+          - app
+      command: >
+        certonly -t -d ${DJANGO_HOSTNAME} --non-interactive --agree-tos -m ${LETS_ENCRYPT_EMAIL} --cert-name sslcert --webroot -w /well_known
 
 
 volumes:
