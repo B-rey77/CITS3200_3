@@ -17,6 +17,10 @@ export DJANGO_DEBUG=0
 #docker run -d --rm -e SMTP_HOST=$SMTP_HOST -e SMTP_USER=$SMTP_USER -e SMTP_PASSWORD=$SMTP_PASSWORD \
     #-p 80:80 -p 443:443 strep-a-database:latest
 
-
-cd /tmp/webapp
-docker-compose up -d
+if [ "x$1" == "x--debug" ]; then
+        export DJANGO_DEBUG=1
+        docker-compose -p webapp up
+else
+        cd /tmp/webapp
+        docker-compose -p webapp up -d
+fi

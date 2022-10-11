@@ -9,7 +9,7 @@ import decimal
 
 logger = logging.getLogger(__name__)
 
-NULL_VALUES = ('n/a', 'not applicable', 'none', 'not defined')
+NULL_VALUES = ('n/a', 'not applicable', 'none', 'not defined', '')
 TRUE_VALUES = ('t', '1', 'yes', 'y', 'true')
 FALSE_VALUES = ('f', '0', 'no', 'n', 'false')
 
@@ -37,13 +37,21 @@ def parse_django_field_value(model, field, value):
     try:
         djfield = model._meta.get_field(field)
 
-        if isinstance(djfield, (fields.CharField, fields.TextField)):
+        if isinstance(djfield, fields.CharField):
             if djfield.choices:
+                if value.lower() in NULL_VALUES and djfield.null:
+                    return None, True
                 for c in djfield.choices:
                     if value.lower() == c[1].lower() or value.lower() == c[0].lower():
                         return (c[0], True)
                 return ('Value "%s" not available for choice field %s' % (value, field), False)
+            if len(value) >= djfield.max_length:
+                return ('Value "%s" too long for field %s (value was %d characters long and the limit is %d)' % (
+                    value, field, len(value), djfield.max_length
+                ), False)
             return (value or '', True)
+        elif isinstance(djfield, fields.TextField):
+            return value, True
 
         if value.lower() in NULL_VALUES:
             return (None, True)

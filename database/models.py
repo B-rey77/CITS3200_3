@@ -99,9 +99,9 @@ class Studies(models.Model):
     Study_group = models.CharField(max_length=5, choices=STUDY_GROUPS, blank=True, verbose_name='Study Group',
     help_text='Broad classification of the Strep A-associated disease type that the study was based on: (i) Superficial skin and/or throat infections, (ii) Invasive Strep A infections, (iii) Acute Rheumatic Fever (ARF), (iv) Acute Post Streptococcal Glomerulonephritis (APSGN).')
     
-    Paper_title = models.CharField(max_length=200, verbose_name='Paper Title', help_text='Title of the published manuscript/report.')
+    Paper_title = models.CharField(max_length=500, verbose_name='Paper Title', help_text='Title of the published manuscript/report.')
 
-    Paper_link = models.CharField(max_length=200, blank=True, verbose_name='Link to Paper Download',
+    Paper_link = models.CharField(max_length=1000, blank=True, verbose_name='Link to Paper Download',
     help_text='URL or doi to facilitate access to the source manuscript/report, full access will depend on open/institutional access permissions set by each journal.')
 
     Year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True, verbose_name='Publication Year', help_text='Year of publication of manuscript/report.')
