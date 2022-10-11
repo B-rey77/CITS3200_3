@@ -17,7 +17,7 @@ services:
       - DB_PASS=password
       - DJANGO_DEBUG
       - DJANGO_HOSTNAME
-      - LETS_ENCRYPT_EMAIL
+      - ADMIN_EMAIL
       - SMTP_HOST
       - SMTP_USER
       - SMTP_PASSWORD
