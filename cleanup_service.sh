@@ -6,10 +6,10 @@
 # EC2 instance
 
 rm -rf /tmp/webapp/
-for x in $(docker container ls -a --format '{{.ID}}' | grep -v pg); do
-    docker container rm $x
-done
+#for x in $(docker container ls -a --format '{{.ID}}' | grep -v -e pg); do
+#    docker container rm $x
+#done
 
-for x in $(docker volume ls --format '{{.Name}}'); do
-    docker volume rm $x
-done
+#for x in $(docker volume ls --format '{{.Name}}'); do
+#    docker volume rm $x
+#done
