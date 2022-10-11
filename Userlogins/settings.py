@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'admin_action_buttons',
-    'rangefilter',
+    #'rangefilter',
     'django_admin_listfilter_dropdown',
     'database',
     'database.admin_apps.MyAdminConfig', # put admin site last so that our templates override the default admin site ones - FVP
