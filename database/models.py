@@ -1,8 +1,11 @@
+from email.policy import default
+from tabnanny import verbose
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.contrib import admin
+from django.conf import settings
 
 # Create your models here.
 
@@ -145,6 +148,10 @@ class Studies(models.Model):
     Other_points = models.CharField(max_length=200, blank=True)
     Notes = models.TextField(blank=True, default='')
 
+    # For approving the adding of studies
+    is_approved = models.BooleanField(default=False, verbose_name='Study Approved', blank=False, help_text=_('Designates whether this study has been approved or is pending approval.'))
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Study Added By User')
+    
     def get_flags(self):
         return (
             {'field': field, 'value': getattr(self, field.name)}
@@ -216,6 +223,10 @@ class Results(models.Model):
     Focus_of_study = models.TextField(blank=True, default='')
     Notes = models.TextField(blank=True, default='')
 
+    # For approving the adding of results
+    is_approved = models.BooleanField(default=False, verbose_name='Results Approved', blank=False, help_text=_('Designates whether this study has been approved or is pending approval.'))
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Results Added By User')
+    
     def get_burden(self):
         if self.Point_estimate is not None:
             return "%0.2f%%" % self.Point_estimate
@@ -291,3 +302,27 @@ SSTStudies = proxy_model_factory(Studies, 'Superficial Skin & Throat Studies', S
 
 # one way to possibly add admin page approval function
 #UnapprovedResults = proxy_model_factory(Results, 'Results (Pending Approval)', Is_approved=False)
+
+is_approved_proxies = []
+def is_approved_proxy_model_factory(model, verbose_name, **filter_args):
+    global is_approved_proxies
+    name = '_'.join('%s_%s' % (k.replace('_', ''), v) for k, v in filter_args.items()) + '_' + model._meta.model_name
+
+    meta = type('Meta', (), {
+        'proxy': True,
+        'verbose_name': verbose_name,
+        'verbose_name_plural': verbose_name,
+    })
+
+    cls = type(name, (model, ), {
+        '__module__': __name__,
+        'Meta': meta,
+        'objects': ProxyManager(filter_args=filter_args),
+    })
+
+    is_approved_proxies.append(cls)
+
+    return cls
+
+UnapprovedStudies = is_approved_proxy_model_factory(Studies, 'Studies (Pending Approval)', is_approved=False)
+UnapprovedResults = is_approved_proxy_model_factory(Results, 'Results (Pending Approval)', is_approved=False)
