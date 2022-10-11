@@ -138,6 +138,16 @@ Resources:
           FromPort: 80
           IpProtocol: "tcp"
           ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          Description: "HTTPS access"
+          FromPort: 443
+          IpProtocol: "tcp"
+          ToPort: 443
+        - CidrIp: "0.0.0.0/0"
+          Description: "SSH access"
+          FromPort: 22
+          IpProtocol: "tcp"
+          ToPort: 22
 
       Tags:
         - Key: "Name"

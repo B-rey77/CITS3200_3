@@ -253,6 +253,7 @@ Resources:
                 Action:
                   - "iam:AddRoleToInstanceProfile"
                   - "iam:AttachRolePolicy"
+                  - "iam:PutRolePolicy"
                   - "iam:CreateInstanceProfile"
                   - "iam:CreateRole"
                   - "iam:DeleteInstanceProfile"
