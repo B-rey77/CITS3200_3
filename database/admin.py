@@ -8,10 +8,11 @@ from django.urls import reverse
 # from rangefilter.filters import NumericRangeFilter
 from admin_action_buttons.admin import ActionButtonsMixin
 
-from database.models import Users, Studies, Results, proxies # Custom admin form imported from models.py
+from database.models import Users, Studies, Results, proxies, is_approved_proxies # Custom admin form imported from models.py
 from .actions import download_as_csv
 from django_admin_listfilter_dropdown.filters import (DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter)
-
+from django.db import models
+        
 # The Custom Admin user model
 class AccountAdmin(ActionButtonsMixin, UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'date_joined', 'is_superuser')
@@ -29,9 +30,27 @@ class AccountAdmin(ActionButtonsMixin, UserAdmin):
 class ViewModelAdmin(ActionButtonsMixin, ModelAdmin):
     def has_view_permission(self, request, obj=None):
         return request.user.is_active #and request.user.can_view_data
-    
+
     def has_add_permission(self, request, obj=None):
         return request.user.is_active #and request.user.can_add_data
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(is_approved=True)
+           
+    # save email of user that's adding studies/results
+    def save_model(self, request, obj, form, change):
+        obj.added_by = request.user
+        super().save_model(request, obj, form, change)
+    
+    # exclude fields so they're not viewable by generic users
+    def get_exclude(self, request, obj=None):
+            is_superuser = request.user.is_superuser
+            excluded = ['added_by']
+            if not is_superuser:
+                return excluded
 
 def get_age_html(obj):
     if obj.Age_min is not None and obj.Age_min > 0:
@@ -59,13 +78,38 @@ def get_age_html(obj):
 
 class ResultsInline(admin.StackedInline):
     model = Results
-    extra = 1
+    extra = 0
+    readonly_fields = ('is_approved',)
+    
+    def get_readonly_fields(self, request, obj=None):
+            is_superuser = request.user.is_superuser
+            if is_superuser:
+                return []
+            return self.readonly_fields
+    
+    def has_view_permission(self, request, obj=None):
+        return True #and request.user.can_add_data
     
     def has_add_permission(self, request, obj=None):
-        return request.user.is_active #and request.user.can_add_data
-        
+        return True #and request.user.can_add_data
+    
+    # exclude fields so they're not viewable by generic users    
+    def get_exclude(self, request, obj=None):
+            is_superuser = request.user.is_superuser
+            excluded = ['is_approved', 'added_by']
+            if not is_superuser:
+                return excluded
+   
 class StudiesAdmin(ViewModelAdmin):
     inlines = [ResultsInline]
+    readonly_fields = ('is_approved',)
+    
+    def get_readonly_fields(self, request, obj=None):
+            is_superuser = request.user.is_superuser
+            if is_superuser:
+                return []
+            return self.readonly_fields
+            
     list_display = ('Paper_title', 'get_info_html', 'get_location_html', 'get_population_html', 'get_age_html',
         'get_case_html', 'Burden_measure', 'Notes', 'get_flags_html')
     list_filter = (
@@ -83,7 +127,7 @@ class StudiesAdmin(ViewModelAdmin):
     actions = [download_as_csv('Export selected Studies to CSV')]
     search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
 
-    @admin.display(ordering='Publication_year', description='Study Info')
+    @admin.display(ordering='Year', description='Study Info')
     def get_info_html(self, obj):
         return render_to_string('database/studies_info.html', context={'row': obj})
 
@@ -117,6 +161,13 @@ class StudiesAdmin(ViewModelAdmin):
     def get_age_html(self, obj):
         return get_age_html(obj)
 
+    # save email of user that's adding studies inline
+    def save_formset(self, request, obj, formset, change):
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.added_by = request.user
+            instance.save()
+            formset.save()
 
 
 class ResultsAdmin(ViewModelAdmin):
@@ -172,6 +223,14 @@ class ResultsAdmin(ViewModelAdmin):
         return get_age_html(obj)
 
     # fvp: removed soem fields for demo: , 'Mortality_flag',	'Recurrent_ARF_flag','GAS_attributable_fraction', 'Defined_ARF', 'Focus_of_study', 
+    readonly_fields = ('is_approved',)
+    
+    def get_readonly_fields(self, request, obj=None):
+            is_superuser = request.user.is_superuser
+            if is_superuser:
+                return []
+            return self.readonly_fields
+    
     list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age_html',
         'get_population_html', 'get_location_html', 'get_study', 'Notes', 'get_flags_html', )
 
@@ -188,7 +247,7 @@ class ResultsAdmin(ViewModelAdmin):
 
     search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction')
     search_help_text = 'Search Study Titles, Measure, Location or Jurisdiction for matching keywords. Put quotes around search terms to find exact phrases only.'
-
+    
 from database.admin_site import admin_site # Custom admin site
 
 admin_site.register(Users, AccountAdmin)
@@ -219,3 +278,34 @@ def register_proxy_admins():
         admin_site.register(p, model_admin)
 
 register_proxy_admins()
+
+# Proxy models for data not approved - viewable by superusers only
+def get_proxy_is_approved_admin(model, base_admin):
+    """ create generic admin pages for different results/study groups """
+    class UnapprovedProxyAdmin(base_admin):
+        list_display = [
+            x for x in base_admin.list_display if x not in {'get_study_group', 'Study_group'}
+        ]
+        list_filter = [
+            x for x in base_admin.list_filter if x not in {'Study__Study_group', 'Study_group'}
+        ]
+        
+        # don't confuse users by letting them add "specific group" results/studies,
+        # since the proxy admin doesn't actually constrain which group the result belongs to.
+        def has_module_permission(self, request):
+            if not request.user.is_superuser:
+                return False
+            return True
+        
+        def has_add_permission(self, request):
+            return False
+            
+    return UnapprovedProxyAdmin
+
+def register_proxy_is_approved_admins():
+    for p in is_approved_proxies:
+        model_admin = get_proxy_is_approved_admin(p, ResultsAdmin if issubclass(p, Results) else StudiesAdmin)
+        
+        admin_site.register(p, model_admin)
+
+register_proxy_is_approved_admins()
