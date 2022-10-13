@@ -19,8 +19,10 @@ class StrepAAdminSite(admin.AdminSite):
 		"""
 		ordering = {
 			"Users": '0',
-			"Studies (Any Group)": '1',
-			"Results (Any Group)": '2'
+			"Studies (Pending Approval)": '1',
+			"Results (Pending Approval)": '2',
+			"Studies (Any Group)": '3',
+			"Results (Any Group)": '4'
 		}
 		app_dict = self._build_app_dict(request)
 		

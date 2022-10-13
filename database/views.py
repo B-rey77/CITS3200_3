@@ -219,15 +219,6 @@ def password_reset_request(request):
 	}
 	return render(request, 'database/password/password_reset.html', context)
 
-def add_study(request):
-    form = StudiesForm()
-    if request.method == 'POST':
-        form = StudiesForm(request.POST)
-        if form.is_valid():
-            form.save()
-    context = {'form':form}
-    return render(request, 'database/add_study.html', context)
-
 def import_data(request):
 	form = ImportDataForm()
 	res = None
