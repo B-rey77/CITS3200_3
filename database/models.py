@@ -178,8 +178,8 @@ class Studies(models.Model):
 
     Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category')
     Age_general = models.CharField(max_length=200, blank=True, verbose_name='Age Category (General)')
-    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
-    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum age (years)')
+    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum age (years)')
 
     Burden_measure = models.CharField(max_length=200, blank=True,
     help_text='The epidemiological measure presented as a point estimate by the study. The categories include: population incidence, population prevalence or proportion (not population based).')
@@ -227,7 +227,8 @@ class Results(models.Model):
     
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE, null=True)
 
-    Age_general = models.CharField(max_length=50, blank=True, verbose_name='Age Category (General)')
+    Age_general = models.CharField(max_length=50, blank=True, verbose_name='Age Category (General)', 
+    help_text='The general age grouping considered for inclusion by the study, classified as “all ages” (if studies did not have any age restrictions); “infants”, “young children”, “children and adolescents”, “18 years and younger” and “16 years and older”. ')
     
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum Age (years)')
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
