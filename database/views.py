@@ -211,6 +211,9 @@ def password_reset_request(request):
 			else:
 				messages.error(request, f'Problem sending email, check if you typed it correctly.')
 				return redirect('password_reset')
+		else:
+				messages.error(request, f'Problem sending email, check if you typed it correctly.')
+				return redirect('password_reset')
 	else:
 		password_form = PasswordResetForm()
 		

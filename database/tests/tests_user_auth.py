@@ -16,7 +16,6 @@ class TestModel(APITestCase):
 
 	def test_creates_user(self):
 		self.assertIsInstance(self.test_user, Users)
-		self.assertFalse(self.test_user.is_staff)
 		self.assertFalse(self.test_user.is_superuser)
 		self.assertEqual(self.test_user.email, 'test@gmail.com')
   
@@ -28,10 +27,6 @@ class TestModel(APITestCase):
 	def test_raises_error_when_email_is_not_supplied(self):
 		self.assertRaises(ValueError, Users.objects.create_user, email='', first_name='Test fname', last_name='Test lname', password='password123')
 	
-	def test_raises_error_when_superuser_is_not_staff(self):
-		with self.assertRaisesMessage(ValueError, 'Superuser must be assigned to is_staff=True'):
-  			Users.objects.create_superuser(email='super@gmail.com', first_name='Test fname', last_name='Test lname', password='password123', is_staff=False)
- 
 	def test_raises_error_when_superuser_is_not_superuser(self):
 		with self.assertRaisesMessage(ValueError, 'Superuser must be assigned to is_superuser=True'):
   			Users.objects.create_superuser(email='super@gmail.com', first_name='Test fname', last_name='Test lname', password='password123', is_superuser=False)
