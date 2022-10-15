@@ -229,7 +229,7 @@ footer {
 }
 
 footer * {
-    color: var(--dark-orange)
+    color: var(--light-orange);
 }
 
 footer span {
@@ -239,4 +239,3 @@ footer span {
 #footer-btm {
     background-color: var(--burgundy);
 }
-
