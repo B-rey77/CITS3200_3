@@ -117,11 +117,15 @@ class StudiesAdmin(ViewModelAdmin):
         ('Aria_remote', DropdownFilter),
         ('Population_denom', DropdownFilter),
         ('Population_group_strata', DropdownFilter),
+        ('Disease', DropdownFilter),
+        ('Clinical_definition_category', ChoiceDropdownFilter),
+        ('Burden_measure', DropdownFilter),
+        
          'Ses_reported', 'Mortality_data', 'Method_limitations')
     ordering = ('Paper_title', 'Study_group')
-    search_fields = ('Paper_title', 'Study_description', 'Age_general', 'Jurisdiction')
+    search_fields = ('Paper_title', 'Paper_link', 'Study_description', 'Data_source', 'Specific_region', 'Method_limitations', 'Other_points' )
     actions = [download_as_csv('Export selected Studies to CSV')]
-    search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
+    search_help_text = 'Search Titles, Study Descriptions, Data Source, Specific Geographic Location, Method Limitations, or Other Points for matching keywords. Put quotes around search terms to find exact phrases only.'
 
     @admin.display(ordering='Year', description='Study Info')
     def get_info_html(self, obj):
@@ -248,8 +252,8 @@ class ResultsAdmin(ViewModelAdmin):
     ordering = ('-Study__Study_group', )    
     actions = [download_as_csv('Export selected results to CSV')]
 
-    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction', 'Age_general')
-    search_help_text = 'Search Study Titles, Measure, Location or Jurisdiction for matching keywords. Put quotes around search terms to find exact phrases only.'
+    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Focus_of_study', 'Notes')
+    search_help_text = 'Search Study Titles, Measure, Specific Geographic location, Focus of Study, or Other Notes for matching keywords. Put quotes around search terms to find exact phrases only.'
     
 from database.admin_site import admin_site # Custom admin site
 

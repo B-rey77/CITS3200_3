@@ -251,43 +251,48 @@ class Results(models.Model):
     Specific_location = models.CharField(max_length=100, blank=True, default='', verbose_name='Specific geographic locations',
     help_text='Point estimates stratified by specific geographic locations (where reported), for example: Kimberley, Far North Queensland or Central Australia.')
     
-    Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True,
+    help_text='Start year for the observed point estimates within the study, allowing for temporal mapping of the point estimates. ')
     
-    Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True,
+    help_text='End year for the observed point estimates within the study, allowing for temporal mapping of the point estimates. ')
     
     Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Observational period,',
     help_text='Total observation time used by the study for generating the point estimate. ')
     
-    Numerator = models.PositiveIntegerField(null=True, blank=True)
+    Numerator = models.PositiveIntegerField(null=True, blank=True,
+    help_text='This variable reports the numerators for studies reporting point estimates as proportions (non-population based). ')
     
-    Denominator = models.PositiveIntegerField(null=True, blank=True)  
+    Denominator = models.PositiveIntegerField(null=True, blank=True,
+    help_text='This variable reports the denominators for studies reporting point estimates as proportions (non-population based). ')  
     
-    Point_estimate = models.CharField(null=True, blank=True, max_length=100)
+    Point_estimate = models.CharField(null=True, blank=True, max_length=100,
+    help_text='Must be interpreted together with Measure to provide the point estimate reported by the study within the correct measurement context. For example: 2020KATZ reports a point estimate of “4.6” and measure of “per 100,000 population”.  ')
     
     Measure = models.TextField(blank=True, default='') 
     
     Interpolated_from_graph = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is interpolated and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is interpolated and “No” or “Unknown” otherwise.')
     
     Age_standardisation	= models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is age-standardised and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is age-standardised and “No” or “Unknown” otherwise.')
     
     Dataset_name = models.BooleanField(null=True, blank=True, help_text='Empty variable')
 
     Proportion = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is a proportion and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is a proportion and “No” or “Unknown” otherwise.')
 
     Mortality_flag = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is a mortality estimate and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is a mortality estimate and “No” or “Unknown” otherwise.')
     
     Recurrent_ARF_flag = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate includes recurrent ARF and “0” or “N/A” otherwise (applicable to ARF burden estimates only).')
+    help_text='Indicator variable which is “Yes” if point estimate includes recurrent ARF and “No” or “Unknown” otherwise (applicable to ARF burden estimates only).')
     
     GAS_attributable_fraction = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is a proportion which is GAS-specific and therefore represents a GAS-attributable fraction and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is a proportion which is GAS-specific and therefore represents a GAS-attributable fraction and “No” or “Unknown” otherwise.')
     
     Defined_ARF	= models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate has defined ARF and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate has defined ARF and “No” or “Unknown” otherwise.')
 
     Focus_of_study = models.CharField(max_length=200,blank=True, default='',
     help_text='Short sentence which summarises the focus of the study, to assist with interpreting the burden estimate.')
