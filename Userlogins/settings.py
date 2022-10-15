@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django_admin_listfilter_dropdown',
     'database',
     'database.admin_apps.MyAdminConfig', # put admin site last so that our templates override the default admin site ones - FVP
+    'coverage',
+    'rest_framework', # for unit testing
     
 ]
 
@@ -176,4 +178,10 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
+}
+
+# for unit testing
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
