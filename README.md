@@ -28,7 +28,8 @@ Run ```python3 -m venv $REPO/pyenv``` in your Terminal. Next, run  ```. $REPO/py
 
 
 
-
+All Users
+---------
 4. Run pip install django to set up the Django module for Python. 
 
 5. Install the required plugins/programs. 
