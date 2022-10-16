@@ -4,6 +4,17 @@
 Home 
 {% endblock %}
 
+{% block style %}
+
+@media only screen and (max-device-height: 900px) {
+    .form_container {
+        margin-top: 40px !important;
+        margin-bottom: 40px !important;
+    }
+}
+
+{% endblock %}
+
 {% block main %}
 
 	<div class="container form_container">

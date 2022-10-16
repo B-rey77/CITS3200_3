@@ -1,6 +1,8 @@
 CITS3200 Project: ASAVI Strep. A. Literature Database
 =====================================================
 
+Online database providing contemporary burden of Strep A infections in Australia.
+
 Installation (Development)
 --------------------------
 

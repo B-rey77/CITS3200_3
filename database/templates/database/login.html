@@ -12,12 +12,27 @@
 		margin-top: 10px;
 		text-align: center;
 	}
+	
+	@media only screen and (max-device-height: 900px) {
+		.form_container {
+			margin-top: 120px !important;
+			margin-bottom: 130px !important;
+		}
+	}
+
+	@media only screen and (min-device-height: 1200px) {
+		.form_container {
+			margin-top: 200px !important;
+			margin-bottom: 220px !important;
+		}
+	}
+
 {% endblock %}
 		
 {% block main %}
 	
 	<div class="form_container">
-		<div class="d-flex justify-content-center">
+		<div class="d-flex justify-content-sm-center">
 			<div class="user_card card gradient-border small_card">
 				<div class="d-flex justify-content-center">
 					<h2 id="login-title">
