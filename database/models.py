@@ -1,5 +1,3 @@
-from email.policy import default
-from tabnanny import verbose
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -306,7 +304,7 @@ class Results(models.Model):
     Defined_ARF	= models.BooleanField(null=True, blank=True,
     help_text='Indicator variable which is “Yes” if point estimate has defined ARF and “No” or “Unknown” otherwise.')
 
-    Focus_of_study = models.CharField(max_length=200,blank=True, default='',
+    Focus_of_study = models.TextField(null=True, blank=True, default='',
     help_text='Short sentence which summarises the focus of the study, to assist with interpreting the burden estimate.')
 
     Notes = models.TextField(blank=True, default='')

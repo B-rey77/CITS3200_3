@@ -38,6 +38,8 @@ def get_field_descriptions(model):
     for field in model._meta.get_fields():
         if isinstance(field, fields.reverse_related.ManyToOneRel):
             continue
+        if isinstance(field, fields.related.ForeignKey):
+            continue
         
         if field.name == 'id':
             continue
