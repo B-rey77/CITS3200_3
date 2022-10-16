@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.utils.html import format_html
 from django.template.loader import render_to_string
 from django.urls import reverse
-# from rangefilter.filters import NumericRangeFilter
+from rangefilter.filters import NumericRangeFilter
 from admin_action_buttons.admin import ActionButtonsMixin
 
 from database.models import Users, Studies, Results, proxies, is_approved_proxies # Custom admin form imported from models.py
@@ -107,17 +107,25 @@ class StudiesAdmin(ViewModelAdmin):
     list_filter = (
         ('Study_design', ChoiceDropdownFilter), 
         ('Study_group',ChoiceDropdownFilter), 
-        ('Age_general',ChoiceDropdownFilter), 
-       # ('Age_min', NumericRangeFilter),
-       # ('Age_max', NumericRangeFilter),
-        ('Ses_reported', DropdownFilter),
-        ('Mortality_data', DropdownFilter),
-        ('Method_limitations', DropdownFilter),
-        'Jurisdiction', 'Climate', 'Aria_remote', 'Population_denom')
+        ('Age_general', DropdownFilter), 
+        ('Age_min', NumericRangeFilter),
+        ('Age_max', NumericRangeFilter),
+        ('Coverage', DropdownFilter),
+        ('Jurisdiction', DropdownFilter),
+        ('Surveillance_setting', DropdownFilter),
+        ('Climate', DropdownFilter), 
+        ('Aria_remote', DropdownFilter),
+        ('Population_denom', DropdownFilter),
+        ('Population_group_strata', DropdownFilter),
+        ('Disease', DropdownFilter),
+        ('Clinical_definition_category', ChoiceDropdownFilter),
+        ('Burden_measure', DropdownFilter),
+        
+         'Ses_reported', 'Mortality_data', 'Method_limitations')
     ordering = ('Paper_title', 'Study_group')
-    search_fields = ('Paper_title', 'Study_description')
+    search_fields = ('Paper_title', 'Paper_link', 'Study_description', 'Data_source', 'Specific_region', 'Method_limitations', 'Other_points' )
     actions = [download_as_csv('Export selected Studies to CSV')]
-    search_help_text = 'Search Titles or Descriptions matching keywords. Put quotes around search terms to find exact phrases only.'
+    search_help_text = 'Search Titles, Study Descriptions, Data Source, Specific Geographic Location, Method Limitations, or Other Points for matching keywords. Put quotes around search terms to find exact phrases only.'
 
     @admin.display(ordering='Year', description='Study Info')
     def get_info_html(self, obj):
@@ -226,17 +234,26 @@ class ResultsAdmin(ViewModelAdmin):
 
     list_filter = (
         ('Study__Study_group',ChoiceDropdownFilter), 
-        ('Age_general',ChoiceDropdownFilter), 
-        ('Interpolated_from_graph',ChoiceDropdownFilter), 
-        ('Age_standardisation', ChoiceDropdownFilter),
+        ('Age_general', DropdownFilter),
+        ('Age_min', NumericRangeFilter),
+        ('Age_max', NumericRangeFilter),
+        ('Numerator', NumericRangeFilter),
+        ('Denominator', NumericRangeFilter),
+        ('Point_estimate', NumericRangeFilter),
+        ('Population_gender', DropdownFilter), 
+        ('Jurisdiction', DropdownFilter),
+        ('Indigenous_population', DropdownFilter),
+        'Indigenous_status',
+        'Interpolated_from_graph', 
+        'Age_standardisation',
          'Dataset_name',
         'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
 
     ordering = ('-Study__Study_group', )    
     actions = [download_as_csv('Export selected results to CSV')]
 
-    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Jurisdiction')
-    search_help_text = 'Search Study Titles, Measure, Location or Jurisdiction for matching keywords. Put quotes around search terms to find exact phrases only.'
+    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Focus_of_study', 'Notes')
+    search_help_text = 'Search Study Titles, Measure, Specific Geographic location, Focus of Study, or Other Notes for matching keywords. Put quotes around search terms to find exact phrases only.'
     
 from database.admin_site import admin_site # Custom admin site
 
@@ -244,6 +261,8 @@ admin_site.register(Users, AccountAdmin)
 admin_site.register(Studies, StudiesAdmin)
 admin_site.register(Results, ResultsAdmin)
 admin_site.unregister(Group)
+
+
 
 def get_proxy_admin(model, base_admin):
     """ create generic admin pages for different results/study groups """
