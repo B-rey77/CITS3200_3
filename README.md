@@ -4,34 +4,26 @@ CITS3200 Project: ASAVI Strep. A. Literature Database
 Installation (Development)
 --------------------------
 
-Setup virtualenv (using python version 3.8 or later):
-```
-python3 -m virtualenv pyenv
-. ./pyenv/bin/activate
-```
+1. Make sure Python (version 3.8 or later) is installed on your computer. You can verify this by opening a Command Prompt/Terminal/Powershell window and using the command ```python --version``` (or ```python3 --version```). You can download the latest version of Python from https://www.python.org/downloads/ if necessary. 
 
+2. Copy the full path name of the folder in which you have placed the code. Use this path name instead of ```$REPO``` in the following commands.
 
-First, install the required plugins/programs using pip:
-```
-pip install -r requirements.txt # or pip3 install -r requirements.txt # *depends on your python version
-```
+3. Set up a virtual Python home environment. If you are a Windows user, run ```python -m venv $REPO/pyenv``` in your Command Prompt/Terminal/Powershell window. For macOS and Linux users, run ```python -m virtualenv $REPO/pyenv```. Next, run ```$REPO/pyenv/Scripts/activate``` for Windows users, or ```. $REPO/pyenv/bin/activate``` for macOS and Linux users. 
+
+4. Run pip install django to set up the Django module for Python. 
+
+5. Install the required plugins/programs. 
+
+```pip install -r requirements.txt```
+
 https://www.codegrepper.com/code-examples/shell/how+to+install+packages+from+requirements.txt
 
-Admin:
-Username: admin
-Password: Password1
-
-Second, initiate local server:
+6. Initiate the local server:
 ```
-python manage.py runserver # *depends on your python version
+python manage.py runserver
 ```
+You can access the local server at http://127.0.0.1:8000/
 
-HTML pages:
-localserver  - homepage
-localserver/login
-localserver/signup
-localserver/visitor (you wont get in unless youre signed up)
-localserver/admin
 
 Installation (deployment)
 -------------------------

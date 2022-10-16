@@ -1,11 +1,16 @@
 asgiref==3.5.2
+coverage==6.5.0
 dal-admin-filters==1.1.0
 Django==4.1
 django-admin-action-buttons==0.1.9
 django-admin-list-filter-dropdown==1.0.3
 django-autocomplete-light==3.9.4
+django-coverage==1.2.4
 django-six==1.0.4
 django-utils-six==2.0
 psycopg2==2.9.4
+djangorestframework==3.14.0
+mock==4.0.3
+pytz==2022.4
 six==1.16.0
 sqlparse==0.4.2

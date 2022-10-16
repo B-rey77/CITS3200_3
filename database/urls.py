@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from  . import views
 from django.contrib.auth import views as auth_views
 
@@ -8,9 +8,7 @@ urlpatterns = [
     path('edit_profile_page/', views.edit_profile_page, name='edit_profile_page'),
     path('signup/', views.signupPage, name='signup'),
     path('login/', views.loginPage, name='login'),
-    path('logout/', views.logoutUser, name='logout'),  
-    path('database_search/', views.database_search, name='database_search'),  
-    path('add_study/', views.add_study, name='add_study'),
+    path('logout/', views.logoutUser, name='logout'),
     path('import_data/', views.import_data, name='import_data'),
     
     # Activate email
