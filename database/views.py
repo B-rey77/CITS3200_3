@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from django.contrib import messages #import for login messages
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from django.core.mail import EmailMessage
 
@@ -222,6 +222,11 @@ def password_reset_request(request):
 	}
 	return render(request, 'database/password/password_reset.html', context)
 
+def superuser_required(user):
+	return user.is_superuser
+
+@login_required(login_url='login')
+@user_passes_test(superuser_required)
 def import_data(request):
 	form = ImportDataForm()
 	res = None

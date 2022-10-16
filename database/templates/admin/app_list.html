@@ -18,8 +18,10 @@
             {% if model.add_url %}
               <td style="text-align: right;">
                   <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
+                  {% if request.user.is_superuser %}
                   {% if model.object_name == 'Studies' or model.object_name == 'Results' %}
                   <a href="{% url 'import_data' %}" class="addlink">{% translate 'Import' %}</a>&nbsp;&nbsp;
+                  {% endif %}
                   {% endif %}
               </td>
             {% else %}
