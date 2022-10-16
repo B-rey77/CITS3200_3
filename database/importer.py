@@ -33,6 +33,34 @@ def format_bool_charfield(value):
     else:
         return 'F'
 
+def get_field_descriptions(model):
+    fdesc = []
+    for field in model._meta.get_fields():
+        if isinstance(field, fields.reverse_related.ManyToOneRel):
+            continue
+        
+        if field.name == 'id':
+            continue
+
+        if isinstance(field, fields.CharField):
+            field_type = 'Text (up to %d characters)' % field.max_length
+        elif isinstance(field, fields.TextField):
+            field_type = 'Text'
+        elif isinstance(field, fields.DecimalField):
+            field_type = 'Decimal'
+        elif isinstance(field, (fields.PositiveSmallIntegerField, fields.PositiveIntegerField)):
+            field_type = 'Number'
+        elif isinstance(field, fields.BooleanField):
+            field_type = 'Yes/No/Unknown'
+        else:
+            field_type = 'Other'
+
+        fdesc.append({
+            'djfield': field,
+            'type': field_type,
+        })
+    return fdesc
+
 def parse_django_field_value(model, field, value):
     try:
         djfield = model._meta.get_field(field)
@@ -139,16 +167,24 @@ def import_methods_results(studies_csv, results_csv):
                 else:
                     setattr(result, field, parsed_value)
 
-            studies = list(Studies.objects.filter(Unique_identifier=row['Results_ID']))
+            study_id = row['Results_ID']
+            studies = list(Studies.objects.filter(Unique_identifier=study_id))
+            if len(studies) == 0 and study_id:
+                try:
+                    studies = list(Studies.objects.filter(id=study_id))
+                except:
+                    pass
 
-            if len(studies) == 0:
-                logger.error('Results: No study found with ID "%s"' % row['Results_ID'])
-                row_errors.append('No matching study found with Study ID %s in group %s' % (row['Results_ID'], row['Result_group']))
-
+            if not study_id:
+                logger.error('Results row %d: Study/Results Unique ID is blank!' % n)
+                row_errors.append('Row %d: Study ID is blank!' % n)
+            elif len(studies) == 0:
+                logger.error('Results: No study found with ID "%s"' % study_id)
+                row_errors.append('No matching study found with Study ID %s in group %s' % (study_id, row['Result_group']))
             elif len(studies) > 1:
-                logger.error('Multiple studies found with id "%s"' % row['Results_ID'])
+                logger.error('Multiple studies found with id "%s"' % study_id)
                 result.Study = studies[0]
-                row_errors.append('Multiple studies match Study ID %s\n' % row['Results_ID'])
+                row_errors.append('Multiple studies match Study ID %s\n' % study_id)
             else:
                 result.Study = studies[0]
 

@@ -96,12 +96,6 @@ class StudiesAdmin(ViewModelAdmin):
     inlines = [ResultsInline]
     readonly_fields = ('is_approved',)
     
-    def get_readonly_fields(self, request, obj=None):
-            is_superuser = request.user.is_superuser
-            if is_superuser:
-                return []
-            return self.readonly_fields
-            
     list_display = ('Paper_title', 'get_info_html', 'get_location_html', 'get_population_html', 'get_age_html',
         'get_case_html', 'Burden_measure', 'Notes', 'get_flags_html')
     list_filter = (
@@ -126,6 +120,46 @@ class StudiesAdmin(ViewModelAdmin):
     search_fields = ('Paper_title', 'Paper_link', 'Study_description', 'Data_source', 'Specific_region', 'Method_limitations', 'Other_points' )
     actions = [download_as_csv('Export selected Studies to CSV')]
     search_help_text = 'Search Titles, Study Descriptions, Data Source, Specific Geographic Location, Method Limitations, or Other Points for matching keywords. Put quotes around search terms to find exact phrases only.'
+
+    download_as_csv_verbose_names = False
+    download_as_csv_fields = [
+        ('get_export_id', 'Unique_identifier'),
+        'Study_group',
+        'Paper_title',
+        'Paper_link',
+        'Year',
+        'Disease',
+        'Study_design',
+        'Study_design_other',
+        'Study_description',
+        'Case_definition',
+        'Case_findings',
+        'Surveillance_setting',
+        'Data_source',
+        'Clinical_definition_category',
+        'Case_cap_meth_other',
+        'Coverage',
+        'Jurisdiction',
+        'Specific_region',
+        'Climate',
+        'Aria_remote',
+        'Population_group_strata',
+        'Age_original', 'Age_general', 'Age_min', 'Age_max',
+        'Burden_measure',
+        'Ses_reported',
+        'Mortality_data',
+        'Method_limitations',
+        'Limitations_identified',
+        'Other_points',
+        ('get_export_notes', 'Notes'),
+        'is_approved',
+    ]
+
+    def get_readonly_fields(self, request, obj=None):
+        is_superuser = request.user.is_superuser
+        if is_superuser:
+            return []
+        return self.readonly_fields
 
     @admin.display(ordering='Year', description='Study Info')
     def get_info_html(self, obj):
@@ -170,6 +204,49 @@ class StudiesAdmin(ViewModelAdmin):
 
 
 class ResultsAdmin(ViewModelAdmin):
+    readonly_fields = ('is_approved',)
+    
+    list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age_html',
+        'get_population_html', 'get_location_html', 'get_study', 'Notes', 'get_flags_html', )
+
+    list_filter = (
+        ('Study__Study_group',ChoiceDropdownFilter), 
+        ('Age_general', DropdownFilter),
+        ('Age_min', NumericRangeFilter),
+        ('Age_max', NumericRangeFilter),
+        ('Numerator', NumericRangeFilter),
+        ('Denominator', NumericRangeFilter),
+        ('Point_estimate', NumericRangeFilter),
+        ('Population_gender', DropdownFilter), 
+        ('Jurisdiction', DropdownFilter),
+        ('Indigenous_population', DropdownFilter),
+        'Indigenous_status',
+        'Interpolated_from_graph', 
+        'Age_standardisation',
+         'Dataset_name',
+        'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
+
+    download_as_csv_verbose_names = False
+    download_as_csv_fields = [
+        ('Study__get_export_id', 'Results_ID'),
+        ('Study__Study_group', 'Result_group'),
+        'Age_general', 'Age_min', 'Age_max', 'Age_original',
+        'Population_gender', 'Indigenous_status', 'Indigenous_population',
+        'Country', 'Jurisdiction', 'Specific_location',
+        'Year_start', 'Year_stop', 'Observation_time_years',
+        'Numerator', 'Denominator', 'Point_estimate', 'Measure',
+        'Interpolated_from_graph', 'Age_standardisation', 'Dataset_name', 'Proportion',
+        'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF', 'Focus_of_study',
+        ('get_export_notes', 'Notes'),
+        'is_approved'
+    ]
+
+    ordering = ('-Study__Study_group', )    
+    actions = [download_as_csv('Export selected results to CSV')]
+
+    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Focus_of_study', 'Notes')
+    search_help_text = 'Search Study Titles, Measure, Specific Geographic location, Focus of Study, or Other Notes for matching keywords. Put quotes around search terms to find exact phrases only.'
+
     @admin.display(ordering='Study__Paper_title', description='Study')
     def get_study(self, obj):
         if obj.Study:
@@ -221,40 +298,13 @@ class ResultsAdmin(ViewModelAdmin):
         return get_age_html(obj)
 
     # fvp: removed soem fields for demo: , 'Mortality_flag',	'Recurrent_ARF_flag','GAS_attributable_fraction', 'Defined_ARF', 'Focus_of_study', 
-    readonly_fields = ('is_approved',)
     
     def get_readonly_fields(self, request, obj=None):
             is_superuser = request.user.is_superuser
             if is_superuser:
                 return []
             return self.readonly_fields
-    
-    list_display = ('get_measure', 'get_study_group', 'get_observation_time', 'get_age_html',
-        'get_population_html', 'get_location_html', 'get_study', 'Notes', 'get_flags_html', )
 
-    list_filter = (
-        ('Study__Study_group',ChoiceDropdownFilter), 
-        ('Age_general', DropdownFilter),
-        ('Age_min', NumericRangeFilter),
-        ('Age_max', NumericRangeFilter),
-        ('Numerator', NumericRangeFilter),
-        ('Denominator', NumericRangeFilter),
-        ('Point_estimate', NumericRangeFilter),
-        ('Population_gender', DropdownFilter), 
-        ('Jurisdiction', DropdownFilter),
-        ('Indigenous_population', DropdownFilter),
-        'Indigenous_status',
-        'Interpolated_from_graph', 
-        'Age_standardisation',
-         'Dataset_name',
-        'Proportion', 'Mortality_flag', 'Recurrent_ARF_flag', 'GAS_attributable_fraction', 'Defined_ARF')
-
-    ordering = ('-Study__Study_group', )    
-    actions = [download_as_csv('Export selected results to CSV')]
-
-    search_fields = ('Study__Paper_title', 'Measure', 'Specific_location', 'Focus_of_study', 'Notes')
-    search_help_text = 'Search Study Titles, Measure, Specific Geographic location, Focus of Study, or Other Notes for matching keywords. Put quotes around search terms to find exact phrases only.'
-    
 from database.admin_site import admin_site # Custom admin site
 
 admin_site.register(Users, AccountAdmin)

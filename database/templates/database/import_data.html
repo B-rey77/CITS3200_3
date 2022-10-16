@@ -6,7 +6,13 @@
 {{ media }}
 {% endblock %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">
+<style>
+    p {
+        text-align: left;
+    }
+</style>
+{% endblock %}
 
 {% block coltype %}colM{% endblock %}
 
@@ -19,21 +25,108 @@
 </div>
 <form enctype="multipart/form-data" action="{% url 'import_data' %}" method="post">
     {% csrf_token %}
-    <div>
+    <div class="mx-3">
 
+    <h2 class="text-danger">Warning: Import will replace ALL data in Studies / Results!</h2>
+    <h3 class="text-danger">Make sure to export a backup copy first!</h3>
     {{ form.as_p }}
     <input type="submit" value="Upload & Import" name="submit">
     
+    {% if results is not None %}
+    <div>
+        <h3>Import successful.</h3>
+        <ul>
+            {% for error in results %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% else %}
+    <p>
+        <b>Please prepare CSV files for Studies and Results containing the following fields:</b>
+    </p>
+    <div class="row g-5">
+        <div class="col-6 p-1">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4"><h3>Studies/Methods</h3></th>
+                </tr>
+                <tr>
+                    <th>Field / Code Name</th>
+                    <th>Display Name</th>
+                    <th>Data Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in studies_fields %}
+                <tr>
+                    <th>{{ f.djfield.name }}</th>
+                    <td>{{ f.djfield.verbose_name }}</td>
+                    <td>
+                        {{ f.type }}
+                        {% if f.djfield.choices %}
+                        <br>
+                        <b>Allowed values:</b>
+                        <ul>
+                            {% for code, text in f.djfield.choices %}
+                            <li>{{ text }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <i>{{ f.djfield.help_text }}</i>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+
+        <div class="col-6 p-1">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4"><h3>Results</h3></th>
+                </tr>
+                <tr>
+                    <th>Field / Code Name</th>
+                    <th>Display Name</th>
+                    <th>Data Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in results_fields %}
+                <tr>
+                    <th>{{ f.djfield.name }}</th>
+                    <td>{{ f.djfield.verbose_name }}</td>
+                    <td>
+                        {{ f.type }}
+                        {% if f.djfield.choices %}
+                        <br>
+                        <b>Allowed values:</b>
+                        <ul>
+                            {% for code, text in f.djfield.choices %}
+                            <li>{{ text }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <i>{{ f.djfield.help_text }}</i>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    {% endif %}
     </div>
 </form>
-{% if results is not None %}
-<div>
-    <h3>Import successful.</h3>
-    <ul>
-        {% for error in results %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+
 {% endblock %}

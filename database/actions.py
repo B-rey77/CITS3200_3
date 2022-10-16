@@ -13,6 +13,7 @@ def prep_field(obj, field):
     Returns the field as a (unicode) string. If the field is a callable, it
     attempts to call it first, without arguments.
     """
+
     if '__' in field:
         bits = field.split('__')
         field = bits.pop()
@@ -71,7 +72,7 @@ def download_as_csv(modeladmin, request, queryset):
                 field_names[spec[0]] = spec[1]
             else:
                 try:
-                    f, _, _, _ = opts.get_field_by_name(spec)
+                    f = opts.get_field(spec)
                 except FieldDoesNotExist:
                     field_names[spec] = spec
                 else:

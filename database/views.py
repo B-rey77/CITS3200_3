@@ -30,7 +30,7 @@ from django.core.mail import send_mail
 from django.db.models.query_utils import Q
 from django.contrib.auth.tokens import default_token_generator
 
-from database.importer import import_methods_results
+from database.importer import import_methods_results, get_field_descriptions
 import io
 
 def home(request):
@@ -230,6 +230,7 @@ def superuser_required(user):
 def import_data(request):
 	form = ImportDataForm()
 	res = None
+
 	if request.method == 'POST':
 		form = ImportDataForm(request.POST, request.FILES)
 		if form.is_valid():
@@ -245,4 +246,6 @@ def import_data(request):
 	return render(request, 'database/import_data.html', context={
 		'form': form,
 		'results': res,
+		'studies_fields': get_field_descriptions(Studies),
+		'results_fields': get_field_descriptions(Results),
 	})

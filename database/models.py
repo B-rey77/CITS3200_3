@@ -171,7 +171,7 @@ class Studies(models.Model):
     help_text='Classification into metropolitan, regional and remote areas based on the ARIA+ (Accessibility and Remoteness Index of Australia) system.')
 
     Population_group_strata = models.CharField(max_length=200, blank=True, default='', 
-    help_text='Indicates whether burden estimates were presented stratified by population group or not i.e.) Yes – then Indigenous vs. non-Indigenous results are presented, No – general population burden estimates only with no stratification.')
+    help_text='Indicates whether burden estimates were presented stratified by population group or not i.e.) Yes - then Indigenous vs. non-Indigenous results are presented, No – general population burden estimates only with no stratification.')
     
     Population_denom = models.CharField(max_length=200, blank=True, default='', verbose_name='Population denominator',
     help_text='The population used as the denominator by the study, for example: general population, Indigenous population, hospitalised patients.')
@@ -208,6 +208,18 @@ class Studies(models.Model):
             if code == self.Study_design:
                 return desc
         return ''
+
+    def get_export_id(self):
+        return self.Unique_identifier or self.id
+
+    def get_export_notes(self):
+        if not self.Notes:
+            return ''
+
+        badtext = self.Notes.find('\nData Inconsistencies')
+        if badtext:
+            return self.Notes[:badtext]
+        return self.Notes
 
     def get_flags(self):
         return (
@@ -309,6 +321,15 @@ class Results(models.Model):
             for field in self._meta.get_fields()
             if isinstance(field, models.BooleanField) and field.name != 'is_approved'
         )
+
+    def get_export_notes(self):
+        if not self.Notes:
+            return ''
+
+        badtext = self.Notes.find('\nData Inconsistencies')
+        if badtext:
+            return self.Notes[:badtext]
+        return self.Notes
 
     def __str__(self):
         if not self.Study:
