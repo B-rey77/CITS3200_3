@@ -27,6 +27,8 @@ MacOS Users
 Run ```python3 -m venv $REPO/pyenv``` in your Terminal. Next, run  ```. $REPO/pyenv/bin/activate```.
 
 
+
+
 4. Run pip install django to set up the Django module for Python. 
 
 5. Install the required plugins/programs. 
