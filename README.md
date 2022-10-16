@@ -1,8 +1,6 @@
 CITS3200 Project: ASAVI Strep. A. Literature Database
 =====================================================
 
-Online database providing contemporary burden of Strep A infections in Australia.
-
 Installation (Development)
 --------------------------
 
@@ -10,7 +8,24 @@ Installation (Development)
 
 2. Copy the full path name of the folder in which you have placed the code. Use this path name instead of ```$REPO``` in the following commands.
 
-3. Set up a virtual Python home environment. If you are a Windows user, run ```python -m venv $REPO/pyenv``` in your Command Prompt/Terminal/Powershell window. For macOS and Linux users, run ```python -m virtualenv $REPO/pyenv```. Next, run ```$REPO/pyenv/Scripts/activate``` for Windows users, or ```. $REPO/pyenv/bin/activate``` for macOS and Linux users. 
+
+
+3. Set up a virtual Python home environment. 
+
+Windows Users
+-------------
+
+Run ```python -m venv $REPO/pyenv``` in your Command Prompt/Terminal/Powershell window. Next, run ```$REPO/pyenv/Scripts/activate```. 
+
+Linux Users
+-----------
+
+Run ```python -m virtualenv $REPO/pyenv``` in your Terminal. Next, run  ```. $REPO/pyenv/bin/activate```.
+
+MacOS Users
+-----------
+Run ```python3 -m venv $REPO/pyenv``` in your Terminal. Next, run  ```. $REPO/pyenv/bin/activate```.
+
 
 4. Run pip install django to set up the Django module for Python. 
 
