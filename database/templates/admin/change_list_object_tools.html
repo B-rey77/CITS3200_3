@@ -8,12 +8,14 @@
       {% blocktranslate with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktranslate %}
     </a>
   </li>
+  {% if request.user.is_superuser %}
   {% if cl.opts.model_name == 'studies' or cl.opts.model_name == 'results' %}
   <li>
     <a href="{% url 'import_data' %}" class="addlink">
       Import Methods/Results
     </a>
   </li>
+  {% endif %}
   {% endif %}
   {% endif %}
 

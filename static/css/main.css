@@ -152,7 +152,7 @@ span {
 
 .form_container {
     margin-top: 130px;
-    margin-bottom: 300px;
+    margin-bottom: 200px;
 }
 
 .input-group-text {
@@ -183,6 +183,9 @@ a.icon-label {
     text-decoration: underline;
 }
 
+.margin-auto {
+    margin: auto;
+}
 
 #login-icon {
     border-top-left-radius: 17px;
@@ -209,6 +212,11 @@ a.icon-label {
     text-align: center;
 }
 
+#pw-done-container {
+    width: 500px;
+    margin: auto;
+}
+
 /* NAVBAR */
 .navbar {
     border-bottom: 5px solid var(--brown);
@@ -221,7 +229,7 @@ footer {
 }
 
 footer * {
-    color: var(--dark-orange)
+    color: var(--light-orange);
 }
 
 footer span {

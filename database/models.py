@@ -1,5 +1,3 @@
-from email.policy import default
-from tabnanny import verbose
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -22,7 +20,11 @@ class CustomAccountManager(BaseUserManager):
     def create_superuser(self, email, first_name, last_name, password, **other_fields):
     
         other_fields.setdefault('is_superuser', True)
+        other_fields.setdefault('is_staff', True)
         
+        if other_fields.get('is_staff') is not True:
+            raise ValueError(
+                'Superuser must be assigned to is_staff=True')
         if other_fields.get('is_superuser') is not True:
             raise ValueError(
                 'Superuser must be assigned to is_superuser=True')
@@ -60,6 +62,7 @@ class Users(AbstractBaseUser):
     institution = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=50, blank=True)
     is_superuser = models.BooleanField(_('Superuser status'), default=False, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
+    is_staff = models.BooleanField(_('Staff status'), default=False, help_text=_('Designates whether the user can log into this admin site.'))
     is_active = models.BooleanField(_('Active'), default=True, help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
     
     objects = CustomAccountManager()
@@ -166,15 +169,15 @@ class Studies(models.Model):
     help_text='Classification into metropolitan, regional and remote areas based on the ARIA+ (Accessibility and Remoteness Index of Australia) system.')
 
     Population_group_strata = models.CharField(max_length=200, blank=True, default='', 
-    help_text='Indicates whether burden estimates were presented stratified by population group or not i.e.) Yes – then Indigenous vs. non-Indigenous results are presented, No – general population burden estimates only with no stratification.')
+    help_text='Indicates whether burden estimates were presented stratified by population group or not i.e.) Yes - then Indigenous vs. non-Indigenous results are presented, No – general population burden estimates only with no stratification.')
     
     Population_denom = models.CharField(max_length=200, blank=True, default='', verbose_name='Population denominator',
     help_text='The population used as the denominator by the study, for example: general population, Indigenous population, hospitalised patients.')
 
     Age_original = models.CharField(max_length=200, blank=True, verbose_name='Age Category')
     Age_general = models.CharField(max_length=200, blank=True, verbose_name='Age Category (General)')
-    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
-    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True)
+    Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum age (years)')
+    Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum age (years)')
 
     Burden_measure = models.CharField(max_length=200, blank=True,
     help_text='The epidemiological measure presented as a point estimate by the study. The categories include: population incidence, population prevalence or proportion (not population based).')
@@ -204,6 +207,18 @@ class Studies(models.Model):
                 return desc
         return ''
 
+    def get_export_id(self):
+        return self.Unique_identifier or self.id
+
+    def get_export_notes(self):
+        if not self.Notes:
+            return ''
+
+        badtext = self.Notes.find('\nData Inconsistencies')
+        if badtext:
+            return self.Notes[:badtext]
+        return self.Notes
+
     def get_flags(self):
         return (
             {'field': field, 'value': getattr(self, field.name)}
@@ -222,7 +237,8 @@ class Results(models.Model):
     
     Study = models.ForeignKey(Studies, on_delete=models.CASCADE, null=True)
 
-    Age_general = models.CharField(max_length=50, blank=True, verbose_name='Age Category (General)')
+    Age_general = models.CharField(max_length=50, blank=True, verbose_name='Age Category (General)', 
+    help_text='The general age grouping considered for inclusion by the study, classified as “all ages” (if studies did not have any age restrictions); “infants”, “young children”, “children and adolescents”, “18 years and younger” and “16 years and older”. ')
     
     Age_min = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Minimum Age (years)')
     Age_max = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Maximum Age (years)')
@@ -245,45 +261,50 @@ class Results(models.Model):
     Specific_location = models.CharField(max_length=100, blank=True, default='', verbose_name='Specific geographic locations',
     help_text='Point estimates stratified by specific geographic locations (where reported), for example: Kimberley, Far North Queensland or Central Australia.')
     
-    Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Year_start = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True,
+    help_text='Start year for the observed point estimates within the study, allowing for temporal mapping of the point estimates. ')
     
-    Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    Year_stop = models.PositiveSmallIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True,
+    help_text='End year for the observed point estimates within the study, allowing for temporal mapping of the point estimates. ')
     
     Observation_time_years = models.DecimalField(validators=[MaxValueValidator(150.0)],decimal_places=2, max_digits=5, null=True, blank=True, verbose_name='Observational period,',
     help_text='Total observation time used by the study for generating the point estimate. ')
     
-    Numerator = models.PositiveIntegerField(null=True, blank=True)
+    Numerator = models.PositiveIntegerField(null=True, blank=True,
+    help_text='This variable reports the numerators for studies reporting point estimates as proportions (non-population based). ')
     
-    Denominator = models.PositiveIntegerField(null=True, blank=True)  
+    Denominator = models.PositiveIntegerField(null=True, blank=True,
+    help_text='This variable reports the denominators for studies reporting point estimates as proportions (non-population based). ')  
     
-    Point_estimate = models.CharField(null=True, blank=True, max_length=100)
+    Point_estimate = models.CharField(null=True, blank=True, max_length=100,
+    help_text='Must be interpreted together with Measure to provide the point estimate reported by the study within the correct measurement context. For example: 2020KATZ reports a point estimate of “4.6” and measure of “per 100,000 population”.  ')
     
     Measure = models.TextField(blank=True, default='') 
     
     Interpolated_from_graph = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is interpolated and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is interpolated and “No” or “Unknown” otherwise.')
     
     Age_standardisation	= models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is age-standardised and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is age-standardised and “No” or “Unknown” otherwise.')
     
     Dataset_name = models.BooleanField(null=True, blank=True, help_text='Empty variable')
 
     Proportion = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is a proportion and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is a proportion and “No” or “Unknown” otherwise.')
 
     Mortality_flag = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is a mortality estimate and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is a mortality estimate and “No” or “Unknown” otherwise.')
     
     Recurrent_ARF_flag = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate includes recurrent ARF and “0” or “N/A” otherwise (applicable to ARF burden estimates only).')
+    help_text='Indicator variable which is “Yes” if point estimate includes recurrent ARF and “No” or “Unknown” otherwise (applicable to ARF burden estimates only).')
     
     GAS_attributable_fraction = models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate is a proportion which is GAS-specific and therefore represents a GAS-attributable fraction and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate is a proportion which is GAS-specific and therefore represents a GAS-attributable fraction and “No” or “Unknown” otherwise.')
     
     Defined_ARF	= models.BooleanField(null=True, blank=True,
-    help_text='Indicator variable which is “1” if point estimate has defined ARF and “0” or “N/A” otherwise.')
+    help_text='Indicator variable which is “Yes” if point estimate has defined ARF and “No” or “Unknown” otherwise.')
 
-    Focus_of_study = models.CharField(max_length=200,blank=True, default='',
+    Focus_of_study = models.TextField(null=True, blank=True, default='',
     help_text='Short sentence which summarises the focus of the study, to assist with interpreting the burden estimate.')
 
     Notes = models.TextField(blank=True, default='')
@@ -298,6 +319,15 @@ class Results(models.Model):
             for field in self._meta.get_fields()
             if isinstance(field, models.BooleanField) and field.name != 'is_approved'
         )
+
+    def get_export_notes(self):
+        if not self.Notes:
+            return ''
+
+        badtext = self.Notes.find('\nData Inconsistencies')
+        if badtext:
+            return self.Notes[:badtext]
+        return self.Notes
 
     def __str__(self):
         if not self.Study:
