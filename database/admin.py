@@ -16,7 +16,7 @@ from django.db import models
 # The Custom Admin user model
 class AccountAdmin(ActionButtonsMixin, UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'date_joined', 'is_superuser', 'profession', 'institution', 'country')
-    fields = ('email', 'first_name', 'last_name', 'date_joined', 'profession', 'institution', 'country', 'is_superuser', 'is_staff', 'is_active')
+    fields = ('email', 'first_name', 'last_name', 'date_joined', 'profession', 'institution', 'country', 'is_superuser', 'is_active')
     search_fields = ['email']
     readonly_fields = ('id', 'date_joined')
     actions = [download_as_csv('Export selected accounts to CSV')]
